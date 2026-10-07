@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Text Sync</title>
+<style>
+:root{--bg:#f6f6f4;--card:#fff;--text:#1d1d1f;--muted:#6b6b70;--border:#dcdcd8;--accent:#2f6f4f;--accent-text:#fff;--err:#b3261e}
+@media (prefers-color-scheme:dark){:root{--bg:#141415;--card:#1e1e20;--text:#ececec;--muted:#9a9aa0;--border:#333336;--accent:#5fb98a;--accent-text:#0f1a14;--err:#ff8a80}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:640px;margin:0 auto;padding:24px 16px}
+h1{font-size:1.25rem;margin:0 0 12px}
+.muted{color:var(--muted);font-size:.9rem}
+textarea,input{width:100%;font:inherit;color:inherit;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px}
+textarea{min-height:45vh;resize:vertical}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+button{font:inherit;border:1px solid var(--border);background:var(--card);color:var(--text);padding:10px 16px;border-radius:10px;cursor:pointer}
+button.primary{background:var(--accent);color:var(--accent-text);border-color:var(--accent)}
+#status{min-height:1.5em;margin-top:10px}
+.err{color:var(--err);font-size:.9rem}
+details{margin-top:32px}
+summary{cursor:pointer;color:var(--muted)}
+.hidden{display:none}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<main>
+  <h1>Text Sync</h1>
+
+  <section id="setup" class="hidden">
+    <p class="muted">Paste a GitHub token with Gist access. It's saved only in this browser. Use the same token on every device.</p>
+    <input id="tokenInput" type="password" placeholder="github_pat_… or ghp_…" autocomplete="off">
+    <div class="row"><button class="primary" id="tokenSave">Connect</button></div>
+    <p class="muted">Create one at <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → Settings → Fine-grained tokens</a> → Account permissions → <b>Gists: Read and write</b>.</p>
+  </section>
+
+  <section id="app" class="hidden">
+    <textarea id="text" placeholder="Type or paste your text…"></textarea>
+    <div class="row">
+      <button class="primary" id="saveBtn">Save</button>
+      <button id="loadBtn">Refresh</button>
+      <button id="copyBtn">Copy</button>
+      <button id="clearBtn">Clear</button>
+    </div>
+    <div id="status" class="muted"></div>
+
+    <details>
+      <summary>Settings</summary>
+      <div class="row">
+        <button id="forgetBtn">Disconnect this device</button>
+      </div>
+    </details>
+  </section>
+</main>
+
+<script>
+const API = 'https://api.github.com';
+const FILE = 'textsync.txt';
+const EMPTY = '(empty)';   // GitHub rejects blank/whitespace-only files, so an empty text is stored as this marker
+const $ = id => document.getElementById(id);
+
+function get(k){ try { return localStorage.getItem(k) || ''; } catch(e){ return ''; } }
+function put(k, v){ try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch(e){} }
+
+let token = get('ts_token');
+let gistId = get('ts_gist');
+let dirty = false;
+
+function status(msg, err){ const s = $('status'); s.textContent = msg; s.className = err ? 'err' : 'muted'; }
+
+async function gh(path, opts = {}){
+  const headers = { 'Accept': 'application/vnd.github+json', 'Authorization': 'Bearer ' + token };
+  if (opts.body) headers['Content-Type'] = 'application/json';
+  const r = await fetch(API + path, { ...opts, headers, cache: 'no-store' });
+  if (!r.ok){
+    let m = r.status + ' ' + r.statusText;
+    try { m = (await r.json()).message || m; } catch(e){}
+    if (r.status === 401) m = 'Token rejected — disconnect and enter a new one.';
+    const err = new Error(m); err.status = r.status; throw err;
+  }
+  return r.json();
+}
+
+// Find the gist that holds our file, so every device finds the same one automatically
+async function findGist(){
+  for (let page = 1; page <= 10; page++){
+    const list = await gh('/gists?per_page=100&page=' + page);
+    const g = list.find(g => g.files && g.files[FILE]);
+    if (g) return g.id;
+    if (list.length < 100) break;
+  }
+  return '';
+}
+
+async function ensureGist(create, firstContent){
+  if (gistId) return gistId;
+  gistId = await findGist();
+  if (!gistId && create){
+    const g = await gh('/gists', { method: 'POST', body: JSON.stringify({
+      description: 'Text Sync app', public: false, files: { [FILE]: { content: firstContent || EMPTY } }
+    })});
+    gistId = g.id;
+    put('ts_gist', gistId);
+    return { id: gistId, created: true };
+  }
+  put('ts_gist', gistId);
+  return gistId;
+}
+
+async function load(){
+  status('Loading…');
+  try {
+    const id = await ensureGist(false);
+    if (!id){ $('text').value = ''; dirty = false; status('Nothing saved yet.'); return; }
+    const g = await gh('/gists/' + id);
+    const f = g.files[FILE];
+    let c = f ? f.content : '';
+    if (f && f.truncated) c = await (await fetch(f.raw_url, { cache: 'no-store' })).text();
+    $('text').value = (c === EMPTY || !c.trim()) ? '' : c;
+    dirty = false;
+    status('Last saved ' + new Date(g.updated_at).toLocaleString());
+  } catch(e){
+    if (e.status === 404){ gistId = ''; put('ts_gist', ''); }
+    status(e.message, true);
+  }
+}
+
+async function save(){
+  status('Saving…');
+  try {
+    const text = $('text').value;
+    const content = text.trim() ? text : EMPTY;
+    const r = await ensureGist(true, content);
+    let g;
+    if (r && r.created){
+      g = await gh('/gists/' + r.id);
+    } else {
+      g = await gh('/gists/' + r, { method: 'PATCH', body: JSON.stringify({
+        files: { [FILE]: { content } }
+      })});
+    }
+    dirty = false;
+    status('Saved ' + new Date(g.updated_at).toLocaleTimeString());
+  } catch(e){
+    if (e.status === 404){ gistId = ''; put('ts_gist', ''); }
+    status(e.message, true);
+  }
+}
+
+function show(){
+  $('setup').classList.toggle('hidden', !!token);
+  $('app').classList.toggle('hidden', !token);
+  if (token) load();
+}
+
+$('tokenSave').onclick = () => {
+  const t = $('tokenInput').value.trim();
+  if (!t) return;
+  token = t; put('ts_token', t); $('tokenInput').value = '';
+  show();
+};
+$('saveBtn').onclick = save;
+$('loadBtn').onclick = () => {
+  if (dirty && !confirm('Discard unsaved changes and load the saved text?')) return;
+  load();
+};
+$('copyBtn').onclick = async () => {
+  try { await navigator.clipboard.writeText($('text').value); status('Copied'); }
+  catch(e){ $('text').select(); status('Select-all done — copy manually', true); }
+};
+$('clearBtn').onclick = () => { $('text').value = ''; dirty = true; $('text').focus(); status('Cleared — press Save to keep it'); };
+$('forgetBtn').onclick = () => {
+  if (!confirm('Remove the token from this device? Your saved text stays on GitHub.')) return;
+  token = ''; gistId = ''; put('ts_token', ''); put('ts_gist', ''); $('text').value = ''; show();
+};
+$('text').addEventListener('input', () => { dirty = true; });
+
+// Ctrl/Cmd+S to save
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's'){ e.preventDefault(); if (token) save(); }
+});
+// Pick up changes from the other device when you come back to the tab
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && token && !dirty) load();
+});
+
+show();
+</script>
+</body>
+</html>
