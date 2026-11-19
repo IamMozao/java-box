@@ -3,73 +3,466 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Text Sync</title>
+<title>Java Box - Where Developers Learn, Share, &amp; Build Careers</title>
 <style>
-:root{--bg:#f6f6f4;--card:#fff;--text:#1d1d1f;--muted:#6b6b70;--border:#dcdcd8;--accent:#2f6f4f;--accent-text:#fff;--err:#b3261e}
-@media (prefers-color-scheme:dark){:root{--bg:#141415;--card:#1e1e20;--text:#ececec;--muted:#9a9aa0;--border:#333336;--accent:#5fb98a;--accent-text:#0f1a14;--err:#ff8a80}}
+:root{
+  --orange:#f48225; --orange-d:#da680b; --blue:#0a95ff; --blue-d:#0074cc; --link:#0063bf; --link-v:#0a95ff;
+  --text:#232629; --muted:#6a737c; --muted-2:#838c95; --border:#d6d9dc; --border-2:#e3e6e8;
+  --bg:#ffffff; --bg-2:#f8f9f9; --bg-3:#f1f2f3;
+  --tag-bg:#e1ecf4; --tag-text:#39739d; --tag-hover:#d0e3f1;
+  --green:#2f6f44; --green-bg:#d1e1d5; --yellow:#fdf7e2; --yellow-b:#f1e5bc; --yellow-h:#fbf3d5;
+  --red:#de4f54; --gold:#f1b600; --silver:#9a9c9f; --bronze:#ab825f;
+  --powder:#e1ecf4; --powder-b:#a0c7e4;
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-main{max-width:640px;margin:0 auto;padding:24px 16px}
-h1{font-size:1.25rem;margin:0 0 12px}
-.muted{color:var(--muted);font-size:.9rem}
-textarea,input{width:100%;font:inherit;color:inherit;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px}
-textarea{min-height:45vh;resize:vertical}
-.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-button{font:inherit;border:1px solid var(--border);background:var(--card);color:var(--text);padding:10px 16px;border-radius:10px;cursor:pointer}
-button.primary{background:var(--accent);color:var(--accent-text);border-color:var(--accent)}
-#status{min-height:1.5em;margin-top:10px}
-.err{color:var(--err);font-size:.9rem}
-details{margin-top:32px}
-summary{cursor:pointer;color:var(--muted)}
-.hidden{display:none}
-a{color:var(--accent)}
+html{background:#fff}
+body{margin:0;background:var(--bg);color:var(--text);font:13px/1.38 -apple-system,BlinkMacSystemFont,"Segoe UI","Liberation Sans",Roboto,sans-serif}
+a{color:var(--link);text-decoration:none}
+a:hover{color:var(--link-v)}
+button,input,textarea,select{font:inherit;color:inherit}
+.hidden{display:none!important}
+svg{display:block}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:0;z-index:50;background:var(--bg-2);border-top:3px solid var(--orange);box-shadow:0 1px 2px hsla(0,0%,0%,.05),0 1px 4px hsla(0,0%,0%,.05),0 2px 8px hsla(0,0%,0%,.05);height:50px}
+.topbar .in{max-width:1264px;margin:0 auto;height:100%;display:flex;align-items:center;gap:4px;padding:0 12px}
+.hamb{display:none;background:none;border:0;padding:8px;cursor:pointer}
+.logo{display:flex;align-items:center;gap:6px;padding:0 8px;height:100%;color:var(--text)}
+.logo:hover{background:var(--bg-3);color:var(--text)}
+.logo .wm{font-size:18px;letter-spacing:-.3px}
+.logo .wm b{font-weight:800}
+.navlinks{display:flex;gap:2px;margin:0 6px}
+.navlinks a{color:var(--muted);padding:6px 12px;border-radius:1000px;font-size:13px;white-space:nowrap}
+.navlinks a:hover{background:var(--bg-3);color:var(--text)}
+.sbox{flex:1;position:relative;margin:0 8px;min-width:0}
+.sbox input{width:100%;border:1px solid #babfc4;border-radius:6px;padding:7.8px 9px 7.8px 32px;background:#fff;font-size:13px}
+.sbox input:focus{outline:0;border-color:#6bbbf7;box-shadow:0 0 0 4px hsla(206,100%,40%,.15)}
+.sbox svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--muted-2)}
+.icons{display:flex;align-items:center;height:100%}
+.ib{height:100%;display:flex;align-items:center;gap:4px;padding:0 10px;color:#525960;position:relative;background:none;border:0;cursor:pointer}
+.ib:hover{background:var(--bg-3);color:var(--text)}
+.ib .dot{position:absolute;top:8px;right:4px;background:var(--red);color:#fff;font-size:11px;font-weight:700;border-radius:2px;padding:0 4px;line-height:15px;min-width:16px;text-align:center;animation:pop 2s infinite}
+.ib .gdot{position:absolute;top:8px;right:2px;background:#5eba7d;color:#fff;font-size:10px;font-weight:700;border-radius:2px;padding:0 3px;line-height:14px}
+@keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.me{gap:6px}
+.me .rep{font-weight:700;font-size:12px;color:var(--text)}
+.bdg{display:inline-flex;align-items:center;gap:3px;font-size:12px;color:var(--muted)}
+.bdg i{width:6px;height:6px;border-radius:50%;display:inline-block}
+.bdg .g{background:var(--gold)}.bdg .s{background:var(--silver)}.bdg .b{background:var(--bronze)}
+
+/* ---------- announcement ---------- */
+.notice{background:#fdf7e2;border-bottom:1px solid #e6cf79;color:#3b4045;font-size:13px}
+.notice .in{max-width:1264px;margin:0 auto;padding:10px 16px;display:flex;gap:10px;align-items:center}
+.notice b{color:#000}
+.notice .x{margin-left:auto;background:none;border:0;cursor:pointer;color:var(--muted);font-size:18px;line-height:1}
+
+/* ---------- layout ---------- */
+.container{max-width:1264px;margin:0 auto;display:flex;background:#fff}
+.leftnav{width:164px;flex-shrink:0;border-right:1px solid var(--border);padding-top:24px;position:sticky;top:50px;align-self:flex-start;height:calc(100vh - 50px);overflow:auto}
+.leftnav a{display:flex;align-items:center;gap:6px;padding:8px 6px 8px 8px;color:var(--muted);font-size:13px;line-height:1.2}
+.leftnav a:hover{color:var(--text)}
+.leftnav a.on{background:var(--bg-3);color:var(--text);font-weight:700;border-right:3px solid var(--orange)}
+.leftnav .sec{font-size:11px;color:var(--muted);text-transform:uppercase;margin:16px 0 4px 8px;letter-spacing:.3px}
+.leftnav .sub{padding-left:30px}
+.leftnav .teams{margin:16px 8px;border:1px solid var(--border-2);border-radius:5px;padding:10px;font-size:12px;color:var(--muted)}
+.leftnav .teams b{color:var(--text);display:block;margin-bottom:4px}
+.leftnav .teams .btn{margin-top:8px;width:100%}
+.leftnav .teams .lk{display:block;text-align:center;margin-top:6px;padding:0}
+.content{flex:1;min-width:0;padding:24px;display:flex;gap:24px}
+.mainbar{flex:1;min-width:0}
+.sidebar{width:300px;flex-shrink:0}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-block;border:1px solid transparent;border-radius:6px;padding:10.4px 10.4px;font-size:13px;line-height:15px;cursor:pointer;text-align:center;white-space:nowrap;background:var(--blue);color:#fff;box-shadow:inset 0 1px 0 0 hsla(0,0%,100%,.4)}
+.btn:hover{background:var(--blue-d);color:#fff}
+.btn.sm{padding:8px .8em;font-size:12px}
+.btn.outline{background:var(--powder);color:#2c5877;border-color:#7aa7c7}
+.btn.outline:hover{background:#b3d3ea;color:#2c5877}
+.btn.white{background:#fff;color:#525960;border-color:#9fa6ad;box-shadow:none}
+.btn.white:hover{background:var(--bg-2);color:var(--text)}
+.btn:disabled{opacity:.5;cursor:default}
+.lnk{background:none;border:0;padding:0;color:var(--muted);cursor:pointer;font-size:13px}
+.lnk:hover{color:var(--muted-2)}
+
+/* ---------- headings ---------- */
+.headline{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.headline h1{font-size:27px;font-weight:400;margin:0 0 0 0;line-height:1.3;overflow-wrap:anywhere}
+.subhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.count{font-size:17px}
+.seg{display:flex;border:1px solid #9fa6ad;border-radius:6px;overflow-x:auto;max-width:100%;scrollbar-width:none}
+.seg button{background:#fff;border:0;border-right:1px solid #9fa6ad;padding:8px 9px;font-size:12px;color:#525960;cursor:pointer;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.seg button:last-child{border-right:0}
+.seg button:hover{background:var(--bg-2)}
+.seg button.on{background:#e3e6e8;color:#3b4045}
+.seg .n{background:var(--blue-d);color:#fff;border-radius:3px;padding:0 4px;font-size:11px}
+
+/* ---------- question list ---------- */
+.qlist{border-top:1px solid var(--border-2);margin:0 -24px 0 -24px}
+.qs{display:flex;gap:16px;padding:16px 16px 16px 24px;border-bottom:1px solid var(--border-2)}
+.qs:hover{background:#fcfcfc}
+.stats{width:108px;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:6px;font-size:13px;color:var(--muted)}
+.stats .v{color:var(--text)}
+.stats b{font-weight:500}
+.stats .ans{border:1px solid transparent;border-radius:3px;padding:2px 4px}
+.stats .ans.has{border-color:var(--green);color:var(--green)}
+.stats .ans.acc{background:var(--green);color:#fff}
+.stats .hot{color:#ab4d00}
+.qbody{flex:1;min-width:0}
+.qtitle{font-size:17px;line-height:1.35;margin:-2px 0 5px;font-weight:400;overflow-wrap:anywhere;padding-right:24px}
+.qtitle a{color:var(--link)}
+.excerpt{color:#3b4045;margin:0 0 8px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:anywhere}
+.qmeta{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;row-gap:6px}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{background:var(--tag-bg);color:var(--tag-text);font-size:12px;border-radius:4px;padding:3.6px 6px;line-height:1;white-space:nowrap;cursor:pointer;border:0}
+.tag:hover{background:var(--tag-hover);color:#2c5877}
+.uline{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted);margin-left:auto;flex-wrap:wrap;justify-content:flex-end}
+.uline .nm{color:var(--link)}
+.uline .rp{font-weight:700;color:#525960}
+.av{border-radius:3px;overflow:hidden;flex-shrink:0;display:inline-block;vertical-align:middle}
+.empty{padding:60px 20px;text-align:center;color:var(--muted);font-size:15px}
+.empty .big{font-size:48px;margin-bottom:8px}
+.pager{display:flex;gap:4px;margin:20px 0 4px;flex-wrap:wrap}
+.pager span{border:1px solid var(--border);border-radius:3px;padding:0 8px;line-height:25px;font-size:13px;color:#3b4045}
+.pager span.on{background:var(--orange);border-color:transparent;color:#fff}
+
+/* ---------- sidebar widgets ---------- */
+.w{border:1px solid var(--border-2);border-radius:3px;margin-bottom:19px;box-shadow:0 1px 2px hsla(0,0%,0%,.05),0 1px 4px hsla(0,0%,0%,.05),0 2px 8px hsla(0,0%,0%,.05);background:#fff;overflow:hidden}
+.w h4{margin:0;padding:12px 15px;font-size:12px;font-weight:700;background:var(--bg-2);border-bottom:1px solid var(--border-2);color:#525960}
+.w.y{background:var(--yellow);border-color:var(--yellow-b)}
+.w.y h4{background:var(--yellow-h);border-color:var(--yellow-b)}
+.w ul{list-style:none;margin:0;padding:4px 0}
+.w li{display:flex;gap:8px;padding:6px 15px;font-size:13px;color:#3b4045;line-height:1.35}
+.w li .ic{flex-shrink:0;width:14px;margin-top:2px}
+.w .hnq li a{color:var(--link)}
+.fav{width:16px;height:16px;border-radius:3px;color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center;flex-shrink:0;margin-top:1px}
+.w .more{padding:8px 15px 12px;font-size:13px}
+.ad{border:1px solid var(--border-2);margin-bottom:19px;text-align:center;position:relative;overflow:hidden;border-radius:3px}
+.ad .lbl{position:absolute;top:4px;right:6px;font-size:10px;color:#999;background:#fff;padding:0 3px;border-radius:2px;z-index:2}
+.ad .art{height:250px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#fff;background:linear-gradient(135deg,#ff2e63,#ff9a00,#08d9d6,#7b2ff7);background-size:300% 300%;animation:grad 6s ease infinite;padding:20px}
+.ad .art b{font-size:24px;line-height:1.1;text-shadow:0 2px 6px #0004}
+.ad .art span{font-size:13px;opacity:.95}
+.ad .art .cta{background:#fff;color:#7b2ff7;font-weight:700;border-radius:999px;padding:8px 16px;margin-top:6px;animation:pop 1.4s infinite}
+@keyframes grad{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
+.wtags{display:flex;flex-wrap:wrap;gap:6px;padding:12px 15px}
+.wtags .x{color:var(--muted);font-size:12px;align-self:center}
+.collective{padding:12px 15px;display:flex;gap:10px;align-items:flex-start;border-top:1px solid var(--border-2)}
+.collective:first-of-type{border-top:0}
+.collective .lg{width:32px;height:32px;border-radius:4px;display:grid;place-items:center;color:#fff;font-weight:800;flex-shrink:0}
+.collective small{color:var(--muted);display:block}
+.collective .btn{margin-left:auto}
+
+/* ---------- question page ---------- */
+.qhead{border-bottom:1px solid var(--border-2);padding-bottom:8px;margin-bottom:16px}
+.qinfo{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.qinfo b{font-weight:400;color:var(--text)}
+.post{display:grid;grid-template-columns:max-content 1fr;padding-bottom:16px}
+.post + .post{border-top:1px solid var(--border-2);padding-top:16px}
+.votecell{padding-right:16px;display:flex;flex-direction:column;align-items:center;gap:4px;width:56px}
+.vb{width:40px;height:40px;border:1px solid var(--border);border-radius:1000px;background:#fff;display:grid;place-items:center;cursor:pointer;color:#3b4045}
+.vb:hover{background:#fdf4ea;border-color:#f7d0a8;color:var(--orange)}
+.vb.on{background:var(--orange);border-color:var(--orange);color:#fff}
+.score{font-size:21px;color:#3b4045;margin:2px 0;text-align:center;min-width:40px}
+.side-ic{color:#babfc4;background:none;border:0;padding:6px;cursor:pointer}
+.side-ic:hover{color:var(--muted)}
+.side-ic.on{color:var(--orange)}
+.acc-ic{color:var(--green);padding:6px;background:none;border:0;cursor:pointer}
+.acc-ic.off{color:#babfc4}
+.acc-ic.off:hover{color:#5eba7d}
+.postcell{min-width:0}
+.prose{font-size:15px;line-height:1.5;overflow-wrap:anywhere;margin-bottom:16px}
+.prose p{margin:0 0 1.1em}
+.prose p:last-child{margin-bottom:0}
+.prose code{background:#e3e6e8;border-radius:4px;padding:2px 4px;font:13px ui-monospace,"Cascadia Mono","Segoe UI Mono","Liberation Mono",Menlo,Monaco,Consolas,monospace}
+.prose pre{background:#f6f6f6;border-radius:6px;padding:12px;overflow:auto;margin:0 0 1.1em;max-height:600px}
+.prose pre code{background:none;padding:0;font-size:13px;line-height:1.3}
+.prose blockquote{margin:0 0 1.1em;padding:8px 12px;border-left:4px solid #c8ccd0;background:#fbf2d4;color:#3b4045}
+.prose blockquote p{margin-bottom:.5em}
+.prose a{text-decoration:underline}
+.prose ul{margin:0 0 1.1em;padding-left:30px}
+.prose p + ul{margin-top:-.8em}
+.pfoot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-start;margin-top:12px}
+.pacts{display:flex;gap:10px;flex-wrap:wrap;padding-top:4px}
+.ucard{border-radius:5px;padding:5px 6px 7px 7px;width:200px;font-size:12px;color:var(--muted)}
+.ucard.owner{background:#d9e9f7}
+.ucard .when{margin-bottom:4px}
+.ucard .row{display:flex;gap:8px;align-items:flex-start}
+.ucard .nm{color:var(--link);font-size:13px;display:block;overflow-wrap:anywhere}
+.ucard .rp{font-weight:700;color:#525960;margin-right:4px}
+.edited{font-size:12px;color:var(--muted);padding-top:4px}
+.ansh{display:flex;justify-content:space-between;align-items:center;margin:20px 0 8px;gap:10px;flex-wrap:wrap}
+.ansh h2{font-size:19px;font-weight:400;margin:0}
+.ansh select{border:1px solid #babfc4;border-radius:6px;padding:6px 26px 6px 8px;font-size:13px;background:#fff}
+.post.accepted .votecell .acc-ic{color:var(--green)}
+.banner{border:1px solid #e6cf79;background:#fdf7e2;border-radius:5px;padding:12px 14px;margin:20px 0;font-size:13px;color:#3b4045}
+.banner b{color:#000}
+.yourans h2{font-size:19px;font-weight:400;margin:24px 0 12px}
+
+/* editor */
+.ed{border:1px solid #babfc4;border-radius:6px;overflow:hidden;background:#fff}
+.ed:focus-within{border-color:#6bbbf7;box-shadow:0 0 0 4px hsla(206,100%,40%,.15)}
+.tb{display:flex;gap:2px;padding:4px;border-bottom:1px solid var(--border);background:#fff;flex-wrap:wrap}
+.tb button{background:none;border:0;border-radius:4px;padding:6px 7px;cursor:pointer;color:#3b4045;font-weight:700;font-size:13px;min-width:30px}
+.tb button:hover{background:var(--bg-3)}
+.tb .sep{width:1px;background:var(--border);margin:4px 4px}
+.ed textarea{width:100%;border:0;padding:10px;min-height:200px;resize:vertical;font:13px/1.45 ui-monospace,"Cascadia Mono",Consolas,Menlo,monospace;outline:0;display:block}
+.preview{margin-top:12px;padding:12px 0;border-top:1px dashed var(--border);min-height:20px}
+.preview:empty{display:none}
+.field{width:100%;border:1px solid #babfc4;border-radius:6px;padding:8px 9px;font-size:13px;background:#fff}
+.field:focus{outline:0;border-color:#6bbbf7;box-shadow:0 0 0 4px hsla(206,100%,40%,.15)}
+.askcard{border:1px solid var(--border-2);border-radius:5px;padding:24px;margin-bottom:12px;box-shadow:0 1px 2px hsla(0,0%,0%,.05),0 1px 4px hsla(0,0%,0%,.05),0 2px 8px hsla(0,0%,0%,.05)}
+.askcard label{display:block;font-weight:600;font-size:15px;margin-bottom:2px}
+.askcard .d{font-size:12px;color:#3b4045;margin-bottom:8px}
+.askintro{background:#ebf4fb;border:1px solid #a6ceed;border-radius:3px;padding:24px;margin-bottom:16px;font-size:15px}
+.askintro h2{font-size:21px;font-weight:400;margin:0 0 8px}
+.askintro ul{margin:8px 0 0;padding-left:30px}
+.askintro li{margin-bottom:2px}
+.formerr{color:#c22e32;font-size:12px;margin-top:6px}
+
+/* users/tags pages */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.tagcard{border:1px solid var(--border);border-radius:3px;padding:12px}
+.tagcard p{color:#3b4045;margin:8px 0;font-size:12px}
+.tagcard small{color:var(--muted-2)}
+.usercard{display:flex;gap:9px;padding:6px}
+.usercard .nm{color:var(--link);font-size:15px;display:block}
+.usercard small{color:var(--muted);display:block}
+
+/* cookie + toast */
+.cookie{position:fixed;left:16px;bottom:16px;width:340px;max-width:calc(100% - 32px);background:#fff;border-radius:7px;box-shadow:0 1px 3px hsla(0,0%,0%,.06),0 2px 6px hsla(0,0%,0%,.06),0 3px 8px hsla(0,0%,0%,.09),0 10px 40px #0003;padding:16px;z-index:90;font-size:13px;color:#3b4045}
+.cookie h5{margin:0 0 6px;font-size:15px;color:var(--text)}
+.cookie .bt{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.cookie .btn{width:100%}
+.cookie .x{position:absolute;right:10px;top:8px;background:none;border:0;font-size:18px;cursor:pointer;color:var(--muted)}
+#toast{position:fixed;top:64px;left:50%;transform:translateX(-50%) translateY(-10px);background:#3b4045;color:#fff;padding:10px 14px;border-radius:5px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;z-index:99;max-width:calc(100% - 32px);text-align:center;box-shadow:0 4px 16px #0003}
+#toast.show{opacity:1;transform:translateX(-50%)}
+#toast.err{background:#c22e32}
+#toast.rep{background:#5eba7d}
+
+/* setup */
+.setup{max-width:316px;margin:60px auto;text-align:center}
+.setup .card{background:#fff;border-radius:7px;padding:24px;text-align:left;box-shadow:0 10px 24px hsla(0,0%,0%,.05),0 20px 48px hsla(0,0%,0%,.05),0 1px 4px hsla(0,0%,0%,.1);margin-top:20px}
+.setup label{font-weight:600;font-size:15px;display:block;margin-bottom:6px}
+.setup .btn{width:100%;margin-top:12px}
+.setup p{color:var(--muted);font-size:12px;margin:12px 0 0}
+body.setupbg{background:var(--bg-3)}
+
+footer.site{background:#232629;color:#9199a1;margin-top:0}
+footer.site .in{max-width:1264px;margin:0 auto;padding:32px 12px 24px;display:flex;gap:32px;flex-wrap:wrap;font-size:13px}
+footer.site h5{color:#babfc4;margin:0 0 12px;font-size:13px;text-transform:uppercase}
+footer.site a,footer.site button{color:#9199a1;display:block;margin-bottom:8px;background:none;border:0;padding:0;cursor:pointer;font-size:13px;text-align:left}
+footer.site a:hover,footer.site button:hover{color:#babfc4}
+footer.site .copy{flex-basis:100%;font-size:11px;color:#6a737c}
+
+/* ---------- responsive ---------- */
+/* file drop */
+.dz{border:2px dashed #9fa6ad;border-radius:8px;background:repeating-linear-gradient(45deg,#fafbfc,#fafbfc 12px,#f3f5f7 12px,#f3f5f7 24px);padding:34px 20px;text-align:center;cursor:pointer;transition:.15s;position:relative}
+.dz:hover{border-color:var(--blue);background:#f0f7fe}
+.dz.over{border-color:var(--orange);background:#fff4e8;transform:scale(1.01);box-shadow:0 0 0 6px #f4822522}
+.dz .big{font-size:42px;line-height:1;margin-bottom:8px;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.dz b{font-size:17px;font-weight:600;display:block;margin-bottom:4px}
+.dz small{color:var(--muted);font-size:12px}
+.dz kbd{background:#fff;border:1px solid #c8ccd0;border-bottom-width:2px;border-radius:3px;padding:0 4px;font-size:11px}
+.staged{border:1px solid var(--border-2);border-radius:6px;margin-top:12px;overflow:hidden}
+.srow{display:flex;align-items:center;gap:10px;padding:8px 12px;border-top:1px solid var(--border-2);font-size:13px}
+.srow:first-child{border-top:0}
+.srow .fn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.srow .sz{color:var(--muted);font-size:12px;white-space:nowrap}
+.srow .x{background:none;border:0;color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px}
+.srow .x:hover{color:var(--red)}
+.ficon{width:30px;height:36px;border-radius:3px;display:grid;place-items:center;color:#fff;font-size:9px;font-weight:800;flex-shrink:0;letter-spacing:.3px;position:relative;clip-path:polygon(0 0,72% 0,100% 22%,100% 100%,0 100%)}
+.pubbar{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.pubbar .field{flex:1;min-width:180px}
+.prog{height:8px;background:var(--bg-3);border-radius:99px;overflow:hidden;margin-top:12px}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),#ffb36b,var(--orange));background-size:200% 100%;animation:shim 1s linear infinite;transition:width .3s}
+@keyframes shim{0%{background-position:0 0}100%{background-position:-200% 0}}
+.progtxt{font-size:12px;color:var(--muted);margin-top:6px}
+.drop{border:1px solid var(--border-2);border-radius:6px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 2px hsla(0,0%,0%,.05)}
+.drop .dh{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg-2);border-bottom:1px solid var(--border-2);flex-wrap:wrap}
+.drop .dh .t{font-weight:600;font-size:14px;flex:1;min-width:0;overflow-wrap:anywhere}
+.drop .dh .m{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px}
+.drop .srow .dl{white-space:nowrap}
+.new-pill{background:var(--orange);color:#fff;font-size:10px;font-weight:700;border-radius:3px;padding:1px 5px;margin-left:6px;vertical-align:middle;animation:pop 1.6s infinite}
+@media (max-width:1100px){ .sidebar{display:none} }
+@media (max-width:800px){
+  .leftnav{position:fixed;left:0;top:50px;background:#fff;z-index:60;box-shadow:0 10px 30px #0003;display:none}
+  body.navopen .leftnav{display:block}
+  .hamb{display:block}
+  .navlinks{display:none}
+  .content{padding:16px}
+  .qlist{margin:0 -16px}
+  .qs{padding:12px 16px;flex-direction:column;gap:6px}
+  .stats{flex-direction:row;width:auto;align-items:center;gap:10px;font-size:12px}
+  .headline h1{font-size:21px}
+  .me .bdg,.ib.hide-m{display:none}
+}
+@media (max-width:560px){
+  .sbox{display:none}
+  .icons{margin-left:auto}
+  .votecell{width:44px;padding-right:10px}
+  .vb{width:34px;height:34px}
+  .ucard{width:100%}
+  .post{grid-template-columns:44px minmax(0,1fr)}
+}
 </style>
 </head>
 <body>
-<main>
-  <h1>Text Sync</h1>
+<header class="topbar">
+  <div class="in">
+    <button class="hamb" id="hamb" aria-label="Menu"><svg width="18" height="18" viewBox="0 0 18 18"><path d="M1 3h16v2H1V3zm0 5h16v2H1V8zm0 5h16v2H1v-2z" fill="currentColor"/></svg></button>
+    <a class="logo" href="#/">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true">
+        <rect x="3" y="11" width="24" height="16" rx="2" fill="#bcbbbb"/>
+        <rect x="5" y="13" width="20" height="12" rx="1" fill="#fff"/>
+        <path d="M9 16l-2.5 3L9 22M21 16l2.5 3L21 22M16.5 15l-3 8" stroke="#f48225" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M11 3c0 2 2 2 2 4M15 2c0 2 2 2 2 4M19 3c0 2 2 2 2 4" stroke="#f48225" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span class="wm">java<b>box</b></span>
+    </a>
+    <nav class="navlinks"><a href="#/about">About</a><a href="#/products">Products</a><a href="#/teams">For Teams</a></nav>
+    <div class="sbox"><svg width="18" height="18" viewBox="0 0 18 18"><path d="m18 16.5-5.14-5.18h-.35a7 7 0 1 0-1.19 1.19v.35L16.5 18l1.5-1.5ZM12 7A5 5 0 1 1 2 7a5 5 0 0 1 10 0Z" fill="currentColor"/></svg><input id="search" type="search" placeholder="Search…" autocomplete="off"></div>
+    <div class="icons" id="icons"></div>
+  </div>
+</header>
 
-  <section id="setup" class="hidden">
-    <p class="muted">Paste a GitHub token with Gist access. It's saved only in this browser. Use the same token on every device.</p>
-    <input id="tokenInput" type="password" placeholder="github_pat_… or ghp_…" autocomplete="off">
-    <div class="row"><button class="primary" id="tokenSave">Connect</button></div>
-    <p class="muted">Create one at <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → Settings → Fine-grained tokens</a> → Account permissions → <b>Gists: Read and write</b>.</p>
-  </section>
+<div class="notice" id="notice"><div class="in"><span>🎉</span><span><b>Java Box is turning 0!</b> Celebrate by answering an unanswered question — every answer earns you shiny imaginary internet points.</span><button class="x" id="noticeX" aria-label="Dismiss">×</button></div></div>
 
-  <section id="app" class="hidden">
-    <textarea id="text" placeholder="Type or paste your text…"></textarea>
-    <div class="row">
-      <button class="primary" id="saveBtn">Save</button>
-      <button id="loadBtn">Refresh</button>
-      <button id="copyBtn">Copy</button>
-      <button id="clearBtn">Clear</button>
-    </div>
-    <div id="status" class="muted"></div>
+<div id="setup" class="setup hidden">
+  <a class="logo" href="#/" style="justify-content:center;height:auto"><svg width="40" height="40" viewBox="0 0 30 30"><rect x="3" y="11" width="24" height="16" rx="2" fill="#bcbbbb"/><rect x="5" y="13" width="20" height="12" rx="1" fill="#fff"/><path d="M9 16l-2.5 3L9 22M21 16l2.5 3L21 22M16.5 15l-3 8" stroke="#f48225" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 3c0 2 2 2 2 4M15 2c0 2 2 2 2 4M19 3c0 2 2 2 2 4" stroke="#f48225" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></a>
+  <div class="card">
+    <label for="tokenInput">Access key</label>
+    <input class="field" id="tokenInput" type="password" placeholder="github_pat_…" autocomplete="off">
+    <button class="btn" id="tokenSave">Continue</button>
+    <p>One time per device. Your GitHub token (Gists: read &amp; write) is remembered in this browser.</p>
+  </div>
+</div>
 
-    <details>
-      <summary>Settings</summary>
-      <div class="row">
-        <button id="forgetBtn">Disconnect this device</button>
-      </div>
-    </details>
-  </section>
-</main>
+<div class="container" id="app">
+  <nav class="leftnav" id="leftnav"></nav>
+  <div class="content">
+    <div class="mainbar" id="main"></div>
+    <aside class="sidebar" id="side"></aside>
+  </div>
+</div>
+
+<footer class="site" id="footer">
+  <div class="in">
+    <div><h5>Java Box</h5><a href="#/questions">Questions</a><a href="#/tags">Tags</a><a href="#/users">Users</a><a href="#/ask">Ask a question</a></div>
+    <div><h5>Products</h5><a href="#/teams">Teams</a><a href="#/products">Advertising</a><a href="#/products">Talent</a></div>
+    <div><h5>Company</h5><a href="#/about">About</a><a href="#/about">Press</a><a href="#/about">Work Here</a><a href="#/about">Legal</a><a href="#/about">Privacy Policy</a><button id="cookieAgain">Cookie Settings</button></div>
+    <div><h5>This device</h5><button id="renameBtn">Change display name</button><button id="refreshBtn">Refresh now</button><button id="forgetBtn">Forget access key</button></div>
+    <div class="copy">Site design / logo © 2026 Java Box; user contributions licensed under "do whatever". rev 2026.10.7.1</div>
+  </div>
+</footer>
+
+<div class="cookie hidden" id="cookie">
+  <button class="x" id="cookieX" aria-label="Close">×</button>
+  <h5>Your privacy</h5>
+  By clicking “Accept all cookies”, you agree Java Box can store cookies on your device and disclose information in accordance with our Cookie Policy. (There are no cookies. We just thought you'd like the pop-up.)
+  <div class="bt"><button class="btn" data-cookie>Accept all cookies</button><button class="btn outline" data-cookie>Necessary cookies only</button><button class="btn white" data-cookie>Customize settings</button></div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
 
 <script>
 const API = 'https://api.github.com';
-const FILE = 'textsync.txt';
-const EMPTY = '(empty)';   // GitHub rejects blank/whitespace-only files, so an empty text is stored as this marker
+const FILE = 'forum.json';
+const OLD_FILE = 'textsync.txt';
+const OLD_EMPTY = '(empty)';
 const $ = id => document.getElementById(id);
 
 function get(k){ try { return localStorage.getItem(k) || ''; } catch(e){ return ''; } }
 function put(k, v){ try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch(e){} }
+function sget(k){ try { return sessionStorage.getItem(k); } catch(e){ return null; } }
+function sput(k, v){ try { sessionStorage.setItem(k, v); } catch(e){} }
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 
 let token = get('ts_token');
 let gistId = get('ts_gist');
-let dirty = false;
+let myId = get('ts_uid'); if (!myId){ myId = uid(); put('ts_uid', myId); }
+let me = get('ts_name'); if (!me){ me = 'user' + Math.floor(1e7 + Math.random() * 9e7); put('ts_name', me); }
+let data = { version: 2, topics: [] };
+let loaded = false, busy = false;
+let sort = 'newest', query = '', ansSort = 'score';
+let editing = null;
+const drafts = {};
 
-function status(msg, err){ const s = $('status'); s.textContent = msg; s.className = err ? 'err' : 'muted'; }
+/* ---------- small helpers ---------- */
+let tTimer;
+function toast(msg, kind, stay){
+  const t = $('toast'); t.textContent = msg; t.className = 'show' + (kind ? ' ' + kind : '');
+  clearTimeout(tTimer); if (!stay) tTimer = setTimeout(() => t.className = '', kind === 'err' ? 5000 : 1800);
+}
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num = n => n >= 1e6 ? (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'm' : n >= 1e4 ? Math.round(n / 1e3) + 'k' : n.toLocaleString('en-US');
+function ago(t){
+  const s = Math.round((Date.now() - t) / 1000);
+  if (s < 60) return s <= 1 ? '1 sec ago' : s + ' secs ago';
+  const m = Math.round(s / 60); if (m < 60) return m + (m === 1 ? ' min ago' : ' mins ago');
+  const h = Math.round(m / 60); if (h < 24) return h + (h === 1 ? ' hour ago' : ' hours ago');
+  const d = Math.round(h / 24); if (d < 30) return d + (d === 1 ? ' day ago' : ' days ago');
+  return new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+function dayWord(t){
+  const d = new Date(t), n = new Date(); const diff = Math.floor((new Date(n.toDateString()) - new Date(d.toDateString())) / 864e5);
+  return diff === 0 ? 'today' : diff === 1 ? 'yesterday' : diff + ' days ago';
+}
+const full = t => new Date(t).toLocaleString();
+function hash(s){ let h = 2166136261; for (const c of String(s)) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
 
+// little symmetric pixel avatar, generated from the name
+function identicon(seed, size){
+  const h = hash(seed), hue = h % 360, fg = `hsl(${hue} 55% 52%)`;
+  let cells = '';
+  for (let y = 0; y < 5; y++) for (let x = 0; x < 3; x++){
+    if ((hash(seed + ':' + y + ':' + x) & 1) === 0) continue;
+    cells += `<rect x="${x}" y="${y}" width="1" height="1"/>`;
+    if (x < 2) cells += `<rect x="${4 - x}" y="${y}" width="1" height="1"/>`;
+  }
+  return `<span class="av" style="width:${size}px;height:${size}px"><svg width="${size}" height="${size}" viewBox="-0.5 -0.5 6 6" shape-rendering="crispEdges"><rect x="-0.5" y="-0.5" width="6" height="6" fill="#f0f0f0"/><g fill="${fg}">${cells}</g></svg></span>`;
+}
+
+/* ---------- text formatting: **bold** *italic* `code` ```blocks``` > quotes [links](url) - lists ---------- */
+function fmt(src){
+  const segs = []; let fence = false;
+  for (const line of String(src).split('\n')){
+    const isQ = !fence && /^>/.test(line);
+    if (!isQ && /^\s*```/.test(line)) fence = !fence;
+    const last = segs[segs.length - 1];
+    if (last && last.q === isQ) last.lines.push(line); else segs.push({ q: isQ, lines: [line] });
+  }
+  return segs.map(sg => sg.q
+    ? '<blockquote>' + fmt(sg.lines.map(l => l.replace(/^> ?/, '')).join('\n')) + '</blockquote>'
+    : fmtPlain(sg.lines.join('\n'))).join('');
+}
+function inline(s){
+  const tok = []; const keep = h => '\u0000' + (tok.push(h) - 1) + '\u0000';
+  let out = esc(s)
+    .replace(/`([^`\n]+)`/g, (_, c) => keep('<code>' + c + '</code>'))
+    .replace(/\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g, (_, t, u) => keep(`<a href="${u}" target="_blank" rel="noopener">${t}</a>`))
+    .replace(/(https?:\/\/[^\s<]+[^\s<.,;:!?)\]'"])/g, u => keep(`<a href="${u}" target="_blank" rel="noopener">${u}</a>`))
+    .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/(^|[^*\w])\*([^*\n]+)\*(?!\w)/g, '$1<em>$2</em>');
+  return out.replace(/\u0000(\d+)\u0000/g, (_, i) => tok[i]);
+}
+function fmtPlain(src){
+  return String(src).split('```').map((part, i) => {
+    if (i % 2) return '<pre><code>' + esc(part.replace(/^[\w+-]*\n/, '').replace(/\n$/, '')) + '</code></pre>';
+    return part.trim() ? part.trim().split(/\n{2,}/).map(p => {
+      // runs of "- item" lines become lists, other runs become paragraphs
+      const runs = [];
+      for (const l of p.split('\n')){
+        const li = /^\s*[-*] /.test(l), last = runs[runs.length - 1];
+        if (last && last.li === li) last.lines.push(l); else runs.push({ li, lines: [l] });
+      }
+      return runs.map(r => r.li
+        ? '<ul>' + r.lines.map(l => '<li>' + inline(l.replace(/^\s*[-*] /, '')) + '</li>').join('') + '</ul>'
+        : '<p>' + r.lines.map(inline).join('<br>') + '</p>').join('');
+    }).join('') : '';
+  }).join('');
+}
+const plain = s => String(s).replace(/```[\s\S]*?```/g, ' [code] ').replace(/[`*>#]/g, '').replace(/\s+/g, ' ').trim();
+
+/* ---------- GitHub storage (private Gist) ---------- */
 async function gh(path, opts = {}){
   const headers = { 'Accept': 'application/vnd.github+json', 'Authorization': 'Bearer ' + token };
   if (opts.body) headers['Content-Type'] = 'application/json';
@@ -77,116 +470,778 @@ async function gh(path, opts = {}){
   if (!r.ok){
     let m = r.status + ' ' + r.statusText;
     try { m = (await r.json()).message || m; } catch(e){}
-    if (r.status === 401) m = 'Token rejected — disconnect and enter a new one.';
+    if (r.status === 401) m = 'Access key rejected — use "Forget access key" at the bottom and enter a new one.';
     const err = new Error(m); err.status = r.status; throw err;
   }
-  return r.json();
+  return r.status === 204 ? null : r.json();
 }
-
-// Find the gist that holds our file, so every device finds the same one automatically
 async function findGist(){
+  let fallback = '';
   for (let page = 1; page <= 10; page++){
     const list = await gh('/gists?per_page=100&page=' + page);
-    const g = list.find(g => g.files && g.files[FILE]);
-    if (g) return g.id;
+    for (const g of list){
+      if (g.files && g.files[FILE]) return g.id;
+      if (!fallback && g.files && g.files[OLD_FILE]) fallback = g.id;
+    }
     if (list.length < 100) break;
   }
-  return '';
+  return fallback;
 }
-
-async function ensureGist(create, firstContent){
-  if (gistId) return gistId;
-  gistId = await findGist();
-  if (!gistId && create){
-    const g = await gh('/gists', { method: 'POST', body: JSON.stringify({
-      description: 'Text Sync app', public: false, files: { [FILE]: { content: firstContent || EMPTY } }
-    })});
-    gistId = g.id;
-    put('ts_gist', gistId);
-    return { id: gistId, created: true };
+async function fetchContent(f){
+  if (!f.truncated) return f.content || '';
+  return (await fetch(f.raw_url, { cache: 'no-store' })).text();
+}
+function normalize(d){
+  d.topics = (d.topics || []).filter(t => t && t.posts && t.posts.length);
+  d.drops = d.drops || [];
+  for (const t of d.topics){
+    t.tags = t.tags || [];
+    t.views = t.views || 0;
+    for (const p of t.posts){ p.votes = p.votes || {}; }
   }
-  put('ts_gist', gistId);
-  return gistId;
+  return d;
 }
-
-async function load(){
-  status('Loading…');
-  try {
-    const id = await ensureGist(false);
-    if (!id){ $('text').value = ''; dirty = false; status('Nothing saved yet.'); return; }
-    const g = await gh('/gists/' + id);
-    const f = g.files[FILE];
-    let c = f ? f.content : '';
-    if (f && f.truncated) c = await (await fetch(f.raw_url, { cache: 'no-store' })).text();
-    $('text').value = (c === EMPTY || !c.trim()) ? '' : c;
-    dirty = false;
-    status('Last saved ' + new Date(g.updated_at).toLocaleString());
-  } catch(e){
-    if (e.status === 404){ gistId = ''; put('ts_gist', ''); }
-    status(e.message, true);
+async function parse(g){
+  const f = g.files[FILE];
+  if (f) return normalize(JSON.parse(await fetchContent(f)));
+  const d = { version: 2, topics: [] }, old = g.files[OLD_FILE];
+  if (old){
+    const c = await fetchContent(old);
+    if (c.trim() && c !== OLD_EMPTY) d.topics.push({ id: 'imported', title: 'Saved note', solved: false, tags: ['note'], views: 0,
+      posts: [{ id: 'imported-1', author: me, authorId: myId, body: c, time: Date.parse(g.updated_at) || Date.now(), votes: {} }] });
+  }
+  return d;
+}
+async function pull(){
+  if (!gistId){ gistId = await findGist(); put('ts_gist', gistId); }
+  if (!gistId) return { version: 2, topics: [] };
+  try { return await parse(await gh('/gists/' + gistId)); }
+  catch(e){ if (e.status === 404){ gistId = ''; put('ts_gist', ''); } throw e; }
+}
+async function push(d){
+  d.version = 2;
+  const body = JSON.stringify(d, null, 1);
+  if (!gistId){
+    const g = await gh('/gists', { method: 'POST', body: JSON.stringify({ description: 'Java Box forum', public: false, files: { [FILE]: { content: body } } }) });
+    gistId = g.id; put('ts_gist', gistId);
+  } else {
+    await gh('/gists/' + gistId, { method: 'PATCH', body: JSON.stringify({ files: { [FILE]: { content: body } } }) });
   }
 }
-
-async function save(){
-  status('Saving…');
+// read newest → change → save, so devices never overwrite each other
+async function mutate(fn, okMsg, quiet){
+  if (busy) return false;
+  busy = true; setBusy(true); if (!quiet) toast('Saving…', '', true);
   try {
-    const text = $('text').value;
-    const content = text.trim() ? text : EMPTY;
-    const r = await ensureGist(true, content);
-    let g;
-    if (r && r.created){
-      g = await gh('/gists/' + r.id);
-    } else {
-      g = await gh('/gists/' + r, { method: 'PATCH', body: JSON.stringify({
-        files: { [FILE]: { content } }
-      })});
+    const d = await pull();
+    if (fn(d) === false){ data = d; if (!quiet) toast('That post no longer exists', 'err'); return false; }
+    await push(d);
+    data = d; loaded = true;
+    if (!quiet && okMsg) toast(okMsg, okMsg.startsWith('+') ? 'rep' : ''); else if (!quiet) $('toast').className = '';
+    return true;
+  } catch(e){ toast(e.message, 'err'); return false; }
+  finally { busy = false; setBusy(false); render(); }
+}
+function setBusy(b){ document.querySelectorAll('[data-save]').forEach(x => x.disabled = b); }
+async function refresh(quiet){
+  if (busy) return;
+  if (!quiet) toast('Loading…', '', true);
+  try { data = await pull(); loaded = true; if (!quiet) toast('Up to date'); }
+  catch(e){ toast(e.message, 'err'); }
+  render();
+}
+
+/* ---------- derived numbers ---------- */
+const score = p => Object.values(p.votes || {}).reduce((a, b) => a + b, 0);
+const answers = t => t.posts.slice(1);
+const lastAct = t => Math.max(...t.posts.map(p => Math.max(p.time, p.edited || 0)));
+const keyOf = p => p.authorId || 'name:' + p.author;
+function users(){
+  const u = {};
+  const add = (p, k) => (u[k] = u[k] || { key: k, name: p.author, rep: 1, q: 0, a: 0, acc: 0, last: 0 });
+  for (const t of data.topics) t.posts.forEach((p, i) => {
+    const x = add(p, keyOf(p)); x.name = p.author; x.last = Math.max(x.last, p.time);
+    if (i === 0) x.q++; else x.a++;
+    for (const v of Object.values(p.votes || {})) x.rep += v > 0 ? 10 : -2;
+    if (i > 0 && t.accepted === p.id){ x.rep += 15; x.acc++; }
+  });
+  for (const x of Object.values(u)) x.rep = Math.max(1, x.rep);
+  return u;
+}
+function badges(x){ return { g: Math.floor(x.rep / 200), s: x.acc + Math.floor(x.a / 3), b: x.q + x.a }; }
+function bdgHtml(b){ return `${b.g ? `<span class="bdg"><i class="g"></i>${b.g}</span>` : ''}${b.s ? `<span class="bdg"><i class="s"></i>${b.s}</span>` : ''}${b.b ? `<span class="bdg"><i class="b"></i>${b.b}</span>` : ''}`; }
+function allTags(){
+  const c = {}; for (const t of data.topics) for (const g of t.tags) c[g] = (c[g] || 0) + 1;
+  return Object.entries(c).sort((a, b) => b[1] - a[1]);
+}
+
+/* ---------- routing ---------- */
+function route(){
+  const h = decodeURIComponent(location.hash.replace(/^#\/?/, ''));
+  let m;
+  if (h === 'ask') return { v: 'ask' };
+  if ((m = h.match(/^q\/(.+)$/))) return { v: 'q', id: m[1] };
+  if ((m = h.match(/^tagged\/(.+)$/))) return { v: 'list', tag: m[1] };
+  if (h === 'tags') return { v: 'tags' };
+  if (h === 'users') return { v: 'users' };
+  if (h === 'files') return { v: 'files' };
+  if (['about', 'products', 'teams', 'companies', 'collectives', 'labs', 'jobs', 'chat', 'discussions'].includes(h)) return { v: 'soon', name: h };
+  if (h === 'questions' || h === 'unanswered') return { v: 'list', unanswered: h === 'unanswered' };
+  return { v: 'list', home: true };
+}
+
+/* ---------- render ---------- */
+function render(){
+  const ok = !!token;
+  $('setup').classList.toggle('hidden', ok);
+  document.body.classList.toggle('setupbg', !ok);
+  ['app', 'footer', 'notice'].forEach(id => $(id).classList.toggle('hidden', !ok || (id === 'notice' && get('jb_notice'))));
+  $('cookie').classList.toggle('hidden', !ok || !!get('jb_cookie'));
+  if (!ok){ $('icons').innerHTML = ''; return; }
+
+  const a = document.activeElement, keep = a && a.id ? { id: a.id, s: a.selectionStart, e: a.selectionEnd } : null;
+  const r = route(), U = users();
+  renderIcons(U);
+  renderNav(r);
+  $('side').innerHTML = sidebar(r);
+  $('main').innerHTML = !loaded ? '<div class="empty"><div class="big">⏳</div>Loading questions…</div>'
+    : r.v === 'ask' ? viewAsk() : r.v === 'q' ? viewQ(r.id, U) : r.v === 'tags' ? viewTags()
+    : r.v === 'users' ? viewUsers(U) : r.v === 'files' ? viewFiles() : r.v === 'soon' ? viewSoon(r.name) : viewList(r, U);
+  if (keep){ const el = $(keep.id); if (el && el !== a){ el.focus(); try { el.setSelectionRange(keep.s, keep.e); } catch(e){} } }
+  updatePreviews();
+}
+
+function renderIcons(U){
+  const mine = U[myId] || { rep: 1, q: 0, a: 0, acc: 0 };
+  const inbox = data.topics.filter(t => t.posts[0].authorId === myId).reduce((n, t) => n + answers(t).filter(p => p.authorId !== myId && Date.now() - p.time < 864e5).length, 0);
+  $('icons').innerHTML = `
+    <a class="ib me" href="#/users" title="${esc(me)} — click to see users">${identicon(me, 24)}<span class="rep">${num(mine.rep)}</span>${bdgHtml(badges(mine))}</a>
+    <a class="ib" href="#/files" title="File drop — send files to your other devices"><svg width="20" height="18" viewBox="0 0 20 18"><path d="M15.5 6.1A6 6 0 0 0 4.1 5 4.5 4.5 0 0 0 4.5 14H8v-2H4.5a2.5 2.5 0 0 1-.2-5l1.4-.1.5-1.3a4 4 0 0 1 7.6.6l.3 1.4 1.4.1A2.7 2.7 0 0 1 15.5 12H12v2h3.5a4.7 4.7 0 0 0 0-7.9ZM10 7l-4 4h3v6h2v-6h3l-4-4Z" fill="currentColor"/></svg>${(data.drops || []).length ? `<span class="gdot" style="background:var(--blue)">${data.drops.length}</span>` : ''}</a>
+    <button class="ib" data-fake="Inbox" title="Recent answers to your questions"><svg width="20" height="18" viewBox="0 0 20 18"><path d="M4.63 1h10.56a2 2 0 0 1 1.94 1.35L20 10.79V15a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-4.21l2.78-8.44c.25-.8 1-1.36 1.85-1.35Zm8.28 12 2-2h2.95l-2.44-7.32a1 1 0 0 0-.95-.68H5.35a1 1 0 0 0-.95.68L1.96 11h2.95l2 2h6Z" fill="currentColor"/></svg>${inbox ? `<span class="dot">${inbox}</span>` : ''}</button>
+    <button class="ib hide-m" data-fake="Achievements" title="Achievements"><svg width="18" height="18" viewBox="0 0 18 18"><path d="M15 2V1H3v1H0v4c0 1.6 1.4 3 3 3v1c.4 1.5 3 2.6 5 3v2H5s-1 1.5-1 2h10c0-.4-1-2-1-2h-3v-2c2-.4 4.6-1.5 5-3V9c1.6-.2 3-1.4 3-3V2h-3ZM3 7c-.5 0-1-.5-1-1V4h1v3Zm8.4 2.5L9 8 6.6 9.4l1-2.7L5 5h3l1-2.7L10 5h2.8l-2.3 1.8 1 2.7h-.1ZM16 6c0 .5-.5 1-1 1V4h1v2Z" fill="currentColor"/></svg>${mine.rep > 1 ? `<span class="gdot">+${mine.rep > 99 ? '99' : mine.rep - 1}</span>` : ''}</button>
+    <button class="ib hide-m" data-fake="Help center" title="Help"><svg width="18" height="18" viewBox="0 0 18 18"><path d="M9 1C4.64 1 1 4.64 1 9c0 4.36 3.64 8 8 8 4.36 0 8-3.64 8-8 0-4.36-3.64-8-8-8Zm.81 12.13c-.02.71-.55 1.15-1.24 1.13-.66-.02-1.17-.49-1.15-1.2.02-.72.56-1.18 1.22-1.16.7.03 1.2.51 1.17 1.23ZM11.77 8c-.59.66-1.78 1.09-2.05 1.97a4 4 0 0 0-.09.75c0 .05-.03.16-.18.16H7.88c-.16 0-.18-.1-.18-.15.06-1.35.66-2.2 1.83-2.88.39-.29.7-.75.7-1.24.01-1.24-1.64-1.82-2.35-.72-.21.33-.18.73-.18 1.1H5.75c0-1.97 1.03-3.26 3.03-3.26 1.75 0 3.47.87 3.47 2.83 0 .57-.2 1.05-.48 1.44Z" fill="currentColor"/></svg></button>
+    <button class="ib hide-m" data-fake="Site switcher" title="Switch sites"><svg width="18" height="18" viewBox="0 0 18 18"><path d="M15 1H3a2 2 0 0 0-2 2v2h16V3a2 2 0 0 0-2-2ZM1 13c0 1.1.9 2 2 2h8v3l3-3h1a2 2 0 0 0 2-2v-2H1v2Zm16-7H1v4h16V6Z" fill="currentColor"/></svg></button>`;
+}
+
+function renderNav(r){
+  const on = v => (r.v === v || (v === 'questions' && r.v === 'list' && !r.home && !r.unanswered) || (v === 'home' && r.home) || (v === 'unanswered' && r.unanswered) || (v === 'tags' && r.v === 'list' && r.tag) || (v === 'questions' && (r.v === 'q' || r.v === 'ask'))) ? 'on' : '';
+  const ic = d => `<svg width="18" height="18" viewBox="0 0 18 18"><path d="${d}" fill="currentColor"/></svg>`;
+  $('leftnav').innerHTML = `
+    <a href="#/" class="${on('home')}">${ic('M15 10v5a1 1 0 0 1-1 1h-3v-4H7v4H4a1 1 0 0 1-1-1v-5H0l9-9 9 9h-3Z')}Home</a>
+    <a href="#/questions" class="${on('questions')}">${ic('M4 1a2 2 0 0 0-2 2v9c0 1.1.9 2 2 2h1v3l3-3h6a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H4Zm5 3c1.4 0 2.5.9 2.5 2.1 0 .9-.6 1.4-1.2 1.8-.4.3-.6.5-.6.9v.4H8.2v-.5c0-.8.4-1.3 1-1.7.4-.3.7-.5.7-.9 0-.4-.4-.7-.9-.7-.6 0-1 .4-1 .9H6.5C6.5 4.9 7.6 4 9 4Zm-.7 6h1.5v1.4H8.3V10Z')}Questions</a>
+    <a href="#/tags" class="${on('tags')}">${ic('M9.24 1a3 3 0 0 0-2.12.88l-5.7 5.7a2 2 0 0 0-.38 2.31 2 2 0 0 0 .38.52l5.17 5.17a2 2 0 0 0 2.83 0l5.7-5.7A3 3 0 0 0 16 7.75V3a2 2 0 0 0-2-2H9.24ZM12.5 7a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z')}Tags</a>
+    <a href="#/users" class="${on('users')}">${ic('M17 14c0 .44-.45 1-1 1H9a1 1 0 0 1-1-1H2c-.54 0-1-.56-1-1 0-2.63 3-4 3-4s.23-.4 0-1c-.84-.62-1.06-.59-1-3 .06-2.42 1.37-3 2.5-3s2.44.58 2.5 3c.06 2.41-.16 2.38-1 3-.23.59 0 1 0 1s1.55.71 2.42 2.1c.39-.12.74-.22 1.04-.3-.18-.2-.31-.56-.42-1.36-.05-.35.07-.68.27-.94-.03-.46-.06-.98-.06-1.3.07-2.42 1.28-2.86 2.25-2.86s2.22.59 2.25 2.86c0 .32-.02.84-.05 1.3.2.26.32.59.27.94-.11.81-.25 1.16-.43 1.36 1.48.37 3.96 1.37 3.96 3.7Z')}Users</a>
+    <a href="#/files" class="${on('files')}">${ic('M14.5 6.1A5.5 5.5 0 0 0 4 5 4 4 0 0 0 4 13h3v-2H4a2 2 0 0 1 0-4h1.4l.4-1.3a3.5 3.5 0 0 1 6.7.5l.3 1.4 1.4.2A2 2 0 0 1 14 11h-3v2h3a4 4 0 0 0 .5-6.9ZM9 7l-3.5 3.5H8V16h2v-5.5h2.5L9 7Z')}Files${(data.drops || []).length ? ` <span class="gdot" style="position:static;background:var(--blue);margin-left:auto;border-radius:3px;padding:0 5px;color:#fff;font-size:11px;font-weight:700">${data.drops.length}</span>` : ''}</a>
+    <a href="#/companies">${ic('M3 2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v13h2V8h-1V6h1a2 2 0 0 1 2 2v7h1v2H0v-2h3V2Zm3 1v2h2V3H6Zm4 0v2h2V3h-2ZM6 7v2h2V7H6Zm4 0v2h2V7h-2Zm-4 4v2h2v-2H6Zm4 0v2h2v-2h-2Z')}Companies</a>
+    <div class="sec">Labs</div>
+    <a href="#/discussions">${ic('M1 3c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H7l-3 3v-3H3a2 2 0 0 1-2-2V3Zm14 4h-1V3a3 3 0 0 0-3-3H7a2 2 0 0 0-2 2v.5h6c1.38 0 2.5 1.12 2.5 2.5v5.5H15l3 3V9a2 2 0 0 0-2-2h-1Z')}Discussions</a>
+    <a href="#/chat">${ic('M2 2a2 2 0 0 0-2 2v6c0 1.1.9 2 2 2h1v3l3-3h6a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2Zm14 3v5a3 3 0 0 1-3 3H8l-1 1h4l3 3v-3h2a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Z')}Chat</a>
+    <a href="#/unanswered" class="${on('unanswered')}">${ic('M9 1a8 8 0 1 0 0 16A8 8 0 0 0 9 1Zm1 13H8v-2h2v2Zm0-4H8V4h2v6Z')}Unanswered</a>
+    <div class="sec">Collectives</div>
+    <a href="#/collectives" class="sub">Explore Collectives</a>
+    <div class="teams"><b>Teams</b>Ask questions, find answers and collaborate at work with Java Box for Teams.<a class="btn sm" href="#/teams" style="color:#fff">Try Teams for free</a><a class="lk" href="#/teams">Explore Teams</a></div>`;
+}
+
+function sidebar(r){
+  const tags = allTags().slice(0, 12);
+  const hnq = [
+    ['#ff6600','S','Why does my code only work when I add a print statement?'],
+    ['#2d6f9e','U','How do I exit vim without restarting my computer?'],
+    ['#9c27b0','W','Is it rude to microwave fish in a shared office kitchen?'],
+    ['#2e7d32','C','Why does my sourdough starter smell like nail polish?'],
+    ['#ad1457','L','Can a cat legally own property?'],
+    ['#ef6c00','P','How many semicolons is too many semicolons?'],
+    ['#1565c0','A','Why is the ocean salty but rivers aren\'t?'],
+    ['#6d4c41','M','How do I tell my manager "just add AI" is not a requirement?'],
+    ['#00838f','G','Is it possible to win Monopoly without making enemies?'],
+    ['#5d4037','J','Why does Java need so many words to say "hello"?'],
+    ['#c62828','E','What happens if you put a fork in a toaster? (asking for a friend)'],
+    ['#37474f','D','Why do all my side projects die at 80%?'],
+  ];
+  const recent = (data.drops || []).slice(0, 3);
+  return `
+  <div class="w"><h4>📦 File Drop</h4><ul>
+    ${recent.length ? recent.map(dr => `<li><span class="ic">📄</span><a href="#/files">${esc(dropLabel(dr))}</a><span style="margin-left:auto;color:var(--muted);font-size:12px;white-space:nowrap">${fmtSize(dr.files.reduce((a, f) => a + f.size, 0))}</span></li>`).join('') : '<li style="color:var(--muted)">Nothing here yet.</li>'}
+  </ul><div class="more"><a href="#/files">${recent.length ? 'All files' : 'Send a file to your other devices'} ›</a></div></div>
+  <div class="w y"><h4>The Java Box Blog</h4><ul>
+    <li><span class="ic">✏️</span><a href="#/about" style="color:#3b4045">Breaking up is hard to do: chunking your monolith one coffee at a time</a></li>
+    <li><span class="ic">✏️</span><a href="#/about" style="color:#3b4045">“It works on my machine” — a love story (Ep. 742)</a></li>
+  </ul><h4 style="border-top:1px solid var(--yellow-b)">Featured on Meta</h4><ul>
+    <li><span class="ic">💬</span><a href="#/about">Community survey results are in: everyone wants dark mode, we said no</a></li>
+    <li><span class="ic">🗳️</span><a href="#/about">New voting buttons are now 3% rounder</a></li>
+    <li><span class="ic">📣</span><a href="#/about">Policy: please stop answering with just “works for me”</a></li>
+  </ul></div>
+  <div class="ad"><span class="lbl">ADVERTISEMENT</span><div class="art"><b>Ship faster.<br>Sleep never.</b><span>The IDE that compiles your code before you write it*</span><span class="cta">TRY FREE ›</span><span style="font-size:10px;opacity:.8">*not really</span></div></div>
+  <div class="w"><h4>${r.tag ? 'Related Tags' : 'Watched Tags'}</h4>
+    <div class="wtags">${tags.length ? tags.map(([g, c]) => `<a class="tag" href="#/tagged/${encodeURIComponent(g)}">${esc(g)}</a><span class="x">× ${c}</span>`).join('') : '<span class="x">Tags you use will show up here.</span>'}</div></div>
+  <div class="w"><h4>Collectives</h4>
+    <div class="collective"><span class="lg" style="background:#f48225">J</span><div><a href="#/collectives">Java</a><small>12.4k Members</small></div><a class="btn outline sm" href="#/collectives">Join</a></div>
+    <div class="collective"><span class="lg" style="background:#2b7a3d">C</span><div><a href="#/collectives">Coffee</a><small>9.9k Members</small></div><a class="btn outline sm" href="#/collectives">Join</a></div>
+    <div class="collective"><span class="lg" style="background:#5b3cc4">B</span><div><a href="#/collectives">Bugs</a><small>∞ Members</small></div><a class="btn outline sm" href="#/collectives">Join</a></div>
+  </div>
+  <div class="w"><h4>Hot Network Questions</h4><ul class="hnq">
+    ${hnq.map(([c, l, t]) => `<li><span class="fav" style="background:${c}">${l}</span><a href="#/about">${esc(t)}</a></li>`).join('')}
+  </ul><div class="more"><a href="#/about">more hot questions</a></div></div>`;
+}
+
+function qSummary(t, U){
+  const first = t.posts[0], ans = answers(t), sc = score(first), u = U[keyOf(first)] || { rep: 1 };
+  const last = lastAct(t), modified = t.posts.length > 1 || first.edited;
+  return `<div class="qs">
+    <div class="stats">
+      <div class="v"><b>${sc}</b> vote${Math.abs(sc) === 1 ? '' : 's'}</div>
+      <div class="ans ${t.accepted ? 'acc' : ans.length ? 'has' : ''}">${t.accepted ? '✓ ' : ''}<b>${ans.length}</b> answer${ans.length === 1 ? '' : 's'}</div>
+      <div class="${t.views >= 10 ? 'hot' : ''}"><b>${num(t.views)}</b> view${t.views === 1 ? '' : 's'}</div>
+    </div>
+    <div class="qbody">
+      <h3 class="qtitle"><a href="#/q/${encodeURIComponent(t.id)}">${esc(t.title)}${t.solved && !t.accepted ? ' [solved]' : ''}</a></h3>
+      <div class="excerpt">${esc(plain(first.body).slice(0, 260))}</div>
+      <div class="qmeta">
+        <div class="tags">${t.tags.map(g => `<a class="tag" href="#/tagged/${encodeURIComponent(g)}">${esc(g)}</a>`).join('')}</div>
+        <div class="uline">${identicon(first.author, 16)} <a class="nm" href="#/users">${esc(first.author)}</a> <span class="rp">${num(u.rep)}</span> ${modified ? 'modified' : 'asked'} <a href="#/q/${encodeURIComponent(t.id)}" style="color:var(--muted)" title="${esc(full(last))}">${ago(last)}</a></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function viewList(r, U){
+  const q = query.toLowerCase().trim();
+  let list = data.topics.slice();
+  if (r.tag) list = list.filter(t => t.tags.includes(r.tag));
+  if (r.unanswered) list = list.filter(t => !answers(t).length);
+  if (q){
+    const tagQ = q.match(/^\[(.+)\]$/);
+    list = list.filter(t => tagQ ? t.tags.includes(tagQ[1]) : (t.title + ' ' + t.posts.map(p => p.body).join(' ') + ' ' + t.tags.join(' ')).toLowerCase().includes(q));
+  }
+  const sorters = {
+    newest: (a, b) => b.posts[0].time - a.posts[0].time,
+    active: (a, b) => lastAct(b) - lastAct(a),
+    score: (a, b) => score(b.posts[0]) - score(a.posts[0]) || lastAct(b) - lastAct(a),
+    unanswered: (a, b) => b.posts[0].time - a.posts[0].time,
+    views: (a, b) => b.views - a.views,
+  };
+  if (sort === 'unanswered') list = list.filter(t => !answers(t).length);
+  list.sort(sorters[sort] || sorters.newest);
+  const unansN = data.topics.filter(t => !answers(t).length).length;
+  const title = r.tag ? `Questions tagged [${esc(r.tag)}]` : r.unanswered ? 'Unanswered Questions' : r.home ? 'Top Questions' : 'All Questions';
+  return `
+  <div class="headline"><h1>${title}</h1><a class="btn" href="#/ask">Ask Question</a></div>
+  ${r.tag ? `<p style="font-size:13px;color:#3b4045;margin:-4px 0 16px">Questions about <b>${esc(r.tag)}</b>. Use this tag for anything about ${esc(r.tag)}, and also some things that are not. <a href="#/tags">See all tags</a></p>` : ''}
+  <div class="subhead">
+    <div class="count">${list.length.toLocaleString('en-US')} question${list.length === 1 ? '' : 's'}${q ? ` matching “${esc(query)}”` : ''}</div>
+    <div class="seg">
+      ${[['newest','Newest'],['active','Active'],['score','Score'],['views','Most viewed'],['unanswered','Unanswered']].map(([k, l]) =>
+        `<button data-sort="${k}" class="${sort === k ? 'on' : ''}">${l}${k === 'unanswered' && unansN ? ` <span class="n">${unansN}</span>` : ''}</button>`).join('')}
+    </div>
+  </div>
+  <div class="qlist">${list.map(t => qSummary(t, U)).join('') ||
+    `<div class="empty"><div class="big">🦗</div>${data.topics.length ? 'No questions match. Try different words, or <a href="#/ask">ask it yourself</a>.' : 'No questions yet. Be the first — <a href="#/ask">ask a question</a>.'}</div>`}</div>
+  ${list.length ? `<div class="pager"><span class="on">1</span><span>15</span><span>30</span><span>50</span><span style="border:0">per page</span></div>` : ''}`;
+}
+
+function editor(id, value, placeholder){
+  return `<div class="ed">
+    <div class="tb">
+      <button type="button" data-md="bold" data-for="${id}" title="Bold">B</button>
+      <button type="button" data-md="italic" data-for="${id}" title="Italic"><i>I</i></button>
+      <span class="sep"></span>
+      <button type="button" data-md="link" data-for="${id}" title="Link">🔗</button>
+      <button type="button" data-md="quote" data-for="${id}" title="Quote">❝</button>
+      <button type="button" data-md="code" data-for="${id}" title="Inline code">{ }</button>
+      <button type="button" data-md="block" data-for="${id}" title="Code block">&lt;/&gt;</button>
+      <span class="sep"></span>
+      <button type="button" data-md="list" data-for="${id}" title="Bulleted list">• —</button>
+    </div>
+    <textarea id="${id}" placeholder="${esc(placeholder)}">${esc(value)}</textarea>
+  </div><div class="preview prose" id="pv-${id}"></div>`;
+}
+
+function viewAsk(){
+  const d = drafts.ask || { title: '', body: '', tags: '' };
+  return `
+  <div class="headline"><h1 style="font-weight:600">Ask a public question</h1></div>
+  <div class="askintro"><h2>Writing a good question</h2>
+    You’re ready to ask a programming-related question and this form will help guide you through the process.
+    <ul><li>Summarize your problem in a one-line title.</li><li>Describe your problem in more detail.</li><li>Describe what you tried and what you expected to happen.</li><li>Add “tags” which help surface your question to members of the community.</li></ul></div>
+  <div class="askcard"><label for="askTitle">Title</label><div class="d">Be specific and imagine you’re asking a question to another person.</div>
+    <input class="field" id="askTitle" maxlength="150" placeholder="e.g. Is there an R function for finding the index of an element in a vector?" value="${esc(d.title)}"><div class="formerr hidden" id="errTitle"></div></div>
+  <div class="askcard"><label>What are the details of your problem?</label><div class="d">Introduce the problem and expand on what you put in the title. Minimum 20 characters.</div>
+    ${editor('askBody', d.body, '')}<div class="formerr hidden" id="errBody"></div></div>
+  <div class="askcard"><label for="askTags">Tags</label><div class="d">Add up to 5 tags to describe what your question is about. Separate with spaces or commas.</div>
+    <input class="field" id="askTags" placeholder="e.g. (java spring maven)" value="${esc(d.tags)}"><div class="tags" id="tagPreview" style="margin-top:8px"></div></div>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn" data-save id="postQ">Post your question</button><a class="lnk" href="#/" style="color:#c22e32">Discard draft</a></div>`;
+}
+
+function postHtml(t, p, i, U, isQ){
+  const sc = score(p), myVote = (p.votes || {})[myId] || 0, acc = !isQ && t.accepted === p.id;
+  const u = U[keyOf(p)] || { rep: 1, q: 0, a: 0, acc: 0 }, owner = !isQ && p.authorId && p.authorId === t.posts[0].authorId;
+  const body = editing === p.id
+    ? `${editor('edit-' + p.id, p.body, '')}<div style="display:flex;gap:10px;margin-top:10px"><button class="btn" data-save data-act="saveEdit" data-id="${esc(p.id)}">Save edits</button><button class="btn white" data-act="cancelEdit">Cancel</button></div>`
+    : `<div class="prose">${fmt(p.body)}</div>`;
+  return `<div class="post${acc ? ' accepted' : ''}" id="p-${esc(p.id)}">
+    <div class="votecell">
+      <button class="vb ${myVote > 0 ? 'on' : ''}" data-save data-act="vote" data-v="1" data-id="${esc(p.id)}" title="This ${isQ ? 'question shows research effort; it is useful and clear' : 'answer is useful'}"><svg width="18" height="18" viewBox="0 0 18 18"><path d="M1 12h16L9 4l-8 8Z" fill="currentColor"/></svg></button>
+      <div class="score">${sc}</div>
+      <button class="vb ${myVote < 0 ? 'on' : ''}" data-save data-act="vote" data-v="-1" data-id="${esc(p.id)}" title="This ${isQ ? 'question does not show any research effort; it is unclear or not useful' : 'answer is not useful'}"><svg width="18" height="18" viewBox="0 0 18 18"><path d="M1 6h16l-8 8-8-8Z" fill="currentColor"/></svg></button>
+      ${isQ ? `<button class="side-ic ${get('bm_' + t.id) ? 'on' : ''}" data-act="bookmark" title="Save this question"><svg width="18" height="18" viewBox="0 0 18 18"><path d="m9 10.6 4 2.66V3H5v10.26l4-2.66ZM3 17V3c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v14l-6-4-6 4Z" fill="currentColor"/></svg></button>
+        <button class="side-ic" data-fake="Timeline" title="Show activity on this post"><svg width="19" height="18" viewBox="0 0 19 18"><path d="M3 9a8 8 0 1 1 3.73 6.77L8.2 14.3A6 6 0 1 0 5 9l3.01-.01-4 4-4-4h3L3 9Zm7-4h1.01L11 9.36l3.22 2.1-.6.93L10 10V5Z" fill="currentColor"/></svg></button>`
+      : `<button class="acc-ic ${acc ? '' : 'off'}" data-save data-act="accept" data-id="${esc(p.id)}" title="${acc ? 'The question owner accepted this as the best answer — click to undo' : 'Accept this answer'}"><svg width="36" height="36" viewBox="0 0 36 36"><path d="m6 14 8 8L30 6v8L14 30l-8-8v-8Z" fill="currentColor"/></svg></button>`}
+    </div>
+    <div class="postcell">
+      ${body}
+      ${isQ && editing !== p.id ? `<div class="tags" style="margin-bottom:12px">${t.tags.map(g => `<a class="tag" href="#/tagged/${encodeURIComponent(g)}">${esc(g)}</a>`).join('')}</div>` : ''}
+      <div class="pfoot">
+        <div class="pacts">
+          <button class="lnk" data-act="share" data-id="${esc(p.id)}">Share</button>
+          <button class="lnk" data-act="edit" data-id="${esc(p.id)}">Edit</button>
+          <button class="lnk" data-act="quote" data-id="${esc(p.id)}">Quote</button>
+          ${isQ ? `<button class="lnk" data-act="${t.solved ? 'reopen' : 'close'}" data-save>${t.solved ? 'Reopen' : 'Close'}</button>` : ''}
+          <button class="lnk" data-act="${isQ ? 'delTopic' : 'delPost'}" data-id="${esc(p.id)}" data-save>Delete</button>
+          <button class="lnk" data-fake="Flag">Flag</button>
+        </div>
+        ${p.edited ? `<div class="edited">edited <span title="${esc(full(p.edited))}">${ago(p.edited)}</span></div>` : ''}
+        <div class="ucard ${isQ || owner ? 'owner' : ''}">
+          <div class="when">${isQ ? 'asked' : 'answered'} <span title="${esc(full(p.time))}">${ago(p.time)}</span></div>
+          <div class="row">${identicon(p.author, 32)}<div><a class="nm" href="#/users">${esc(p.author)}</a><span class="rp">${num(u.rep)}</span>${bdgHtml(badges(u))}</div></div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function viewQ(id, U){
+  const t = data.topics.find(x => x.id === id);
+  if (!t) return `<div class="empty"><div class="big">🔍</div><b>Page not found</b><br>This question was removed from Java Box for reasons of moderation. <a href="#/">Browse more questions</a>.</div>`;
+  const first = t.posts[0];
+  let ans = answers(t).slice();
+  const sorters = { score: (a, b) => score(b) - score(a) || a.time - b.time, newest: (a, b) => b.time - a.time, oldest: (a, b) => a.time - b.time };
+  ans.sort(sorters[ansSort]);
+  if (t.accepted && ansSort === 'score'){ const i = ans.findIndex(p => p.id === t.accepted); if (i > 0) ans.unshift(ans.splice(i, 1)[0]); }
+  const others = data.topics.filter(x => x.id !== t.id && x.tags.some(g => t.tags.includes(g))).slice(0, 5);
+  return `
+  <div class="qhead">
+    <div class="headline" style="margin-bottom:8px"><h1>${esc(t.title)}${t.solved && !t.accepted ? ' <span style="color:var(--muted)">[closed]</span>' : ''}</h1><a class="btn" href="#/ask">Ask Question</a></div>
+    <div class="qinfo"><span>Asked <b title="${esc(full(first.time))}">${dayWord(first.time)}</b></span><span>Modified <b>${dayWord(lastAct(t))}</b></span><span>Viewed <b>${t.views.toLocaleString('en-US')} time${t.views === 1 ? '' : 's'}</b></span></div>
+  </div>
+  ${t.solved && !t.accepted ? `<div class="banner"><b>Closed.</b> This question was marked as solved. It is not currently accepting answers… just kidding, you can still answer below.</div>` : ''}
+  ${postHtml(t, first, 0, U, true)}
+  ${ans.length ? `<div class="ansh"><h2>${ans.length} Answer${ans.length === 1 ? '' : 's'}</h2>
+    <label style="display:flex;gap:6px;align-items:center;font-size:12px">Sorted by:<select id="ansSort">
+      <option value="score" ${ansSort === 'score' ? 'selected' : ''}>Highest score (default)</option>
+      <option value="newest" ${ansSort === 'newest' ? 'selected' : ''}>Date modified (newest first)</option>
+      <option value="oldest" ${ansSort === 'oldest' ? 'selected' : ''}>Date created (oldest first)</option></select></label></div>` : ''}
+  ${ans.map((p, i) => postHtml(t, p, i + 1, U, false)).join('')}
+  ${!ans.length ? `<div class="banner">Know someone who can answer? Share a link to this <a href="#" data-act="share" data-id="${esc(first.id)}">question</a> via email, Twitter, or Facebook. Or answer it yourself, we won't tell.</div>` : ''}
+  <div class="yourans"><h2>Your Answer</h2>
+    ${editor('ansBody', drafts[t.id] || '', '')}
+    <div style="display:flex;gap:12px;align-items:center;margin-top:14px;flex-wrap:wrap">
+      <button class="btn" data-save id="postA">Post Your Answer</button>
+      <span style="font-size:12px;color:var(--muted)">Posting as ${identicon(me, 16)} <b>${esc(me)}</b>. By clicking “Post Your Answer”, you agree to our terms of service and acknowledge you have read our privacy policy.</span>
+    </div>
+  </div>
+  ${others.length ? `<div style="margin-top:28px"><h2 style="font-size:19px;font-weight:400">Related</h2>${others.map(o => `<div style="display:flex;gap:10px;padding:5px 0;align-items:baseline"><span class="tag" style="background:${o.accepted ? 'var(--green)' : '#e3e6e8'};color:${o.accepted ? '#fff' : '#3b4045'};min-width:38px;text-align:center">${score(o.posts[0])}</span><a href="#/q/${encodeURIComponent(o.id)}">${esc(o.title)}</a></div>`).join('')}</div>` : ''}`;
+}
+
+function viewTags(){
+  const tags = allTags();
+  return `<div class="headline"><h1>Tags</h1></div>
+  <p style="font-size:15px;max-width:600px;margin:0 0 20px">A tag is a keyword or label that categorizes your question with other, similar questions. Using the right tags makes it easier for others to find and answer your question.</p>
+  <div class="grid">${tags.map(([g, c]) => `<div class="tagcard"><a class="tag" href="#/tagged/${encodeURIComponent(g)}">${esc(g)}</a><p>For questions about ${esc(g)}. Probably.</p><small>${c} question${c === 1 ? '' : 's'}</small></div>`).join('') || '<div class="empty">No tags yet. Add some when you ask a question.</div>'}</div>`;
+}
+
+function viewUsers(U){
+  const list = Object.values(U).sort((a, b) => b.rep - a.rep);
+  return `<div class="headline"><h1>Users</h1></div>
+  <p style="font-size:13px;color:var(--muted);margin:0 0 16px">You are <b style="color:var(--text)">${esc(me)}</b> on this device. <button class="lnk" style="color:var(--link)" id="renameBtn2">Change display name</button></p>
+  <div class="grid">${list.map(x => `<div class="usercard">${identicon(x.name, 48)}<div><span class="nm">${esc(x.name)}</span><small><b style="color:#525960">${num(x.rep)}</b> reputation ${bdgHtml(badges(x))}</small><small>${x.q} question${x.q === 1 ? '' : 's'} · ${x.a} answer${x.a === 1 ? '' : 's'}</small><small>last seen ${ago(x.last)}</small></div></div>`).join('') || '<div class="empty">No users yet. Post something to become user #1.</div>'}</div>`;
+}
+
+function viewSoon(name){
+  return `<div class="empty"><div class="big">🚧</div><b style="font-size:21px;color:var(--text);text-transform:capitalize">${esc(name)}</b><br><br>This page is under construction and has been since 2008.<br><br><a class="btn" href="#/" style="color:#fff">Back to questions</a></div>`;
+}
+
+function updatePreviews(){
+  for (const id of ['askBody', 'ansBody']) { const el = $(id), pv = $('pv-' + id); if (el && pv) pv.innerHTML = el.value.trim() ? fmt(el.value) : ''; }
+  document.querySelectorAll('[id^="edit-"]').forEach(el => { const pv = $('pv-' + el.id); if (pv) pv.innerHTML = el.value.trim() ? fmt(el.value) : ''; });
+  const tp = $('tagPreview'); if (tp) tp.innerHTML = parseTags($('askTags').value).map(g => `<span class="tag">${esc(g)}</span>`).join('');
+}
+const parseTags = s => [...new Set(String(s).toLowerCase().split(/[\s,]+/).map(x => x.replace(/[^a-z0-9+#.\-]/g, '')).filter(Boolean))].slice(0, 5);
+
+/* ---------- actions ---------- */
+async function postQuestion(){
+  const d = drafts.ask || {}, title = (d.title || '').trim(), body = (d.body || '').trim();
+  const eT = $('errTitle'), eB = $('errBody'); eT.classList.add('hidden'); eB.classList.add('hidden');
+  if (title.length < 15){ eT.textContent = 'Title must be at least 15 characters.'; eT.classList.remove('hidden'); $('askTitle').focus(); return; }
+  if (body.length < 20){ eB.textContent = 'Body must be at least 20 characters; you entered ' + body.length + '.'; eB.classList.remove('hidden'); $('askBody').focus(); return; }
+  const t = { id: uid(), title, solved: false, tags: parseTags(d.tags || ''), views: 0, posts: [{ id: uid(), author: me, authorId: myId, body, time: Date.now(), votes: {} }] };
+  if (await mutate(x => { x.topics.push(t); }, 'Your question has been posted')){ delete drafts.ask; sput('v_' + t.id, '1'); location.hash = '#/q/' + encodeURIComponent(t.id); }
+}
+async function postAnswer(tid){
+  const body = (drafts[tid] || '').trim();
+  if (body.length < 5){ toast('Body must be at least 5 characters.', 'err'); $('ansBody').focus(); return; }
+  const p = { id: uid(), author: me, authorId: myId, body, time: Date.now(), votes: {} };
+  if (await mutate(x => { const t = x.topics.find(y => y.id === tid); if (!t) return false; t.posts.push(p); }, 'Your answer has been posted')){
+    delete drafts[tid]; render(); $('p-' + p.id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+const withT = (tid, fn) => x => { const t = x.topics.find(y => y.id === tid); if (!t) return false; return fn(t, x); };
+const findP = (t, pid) => t.posts.find(p => p.id === pid);
+
+async function act(name, el){
+  const r = route(), tid = r.id, pid = el.dataset.id;
+  const t = data.topics.find(x => x.id === tid);
+  if (!t && name !== 'cancelEdit') return;
+  switch (name){
+    case 'vote': {
+      const p = findP(t, pid); if (!p) return;
+      if (p.authorId === myId){ toast('You can’t vote for your own post.', 'err'); return; }
+      const v = +el.dataset.v, cur = (p.votes || {})[myId] || 0, nv = cur === v ? 0 : v;
+      return mutate(withT(tid, t => { const q = findP(t, pid); if (!q) return false; q.votes = q.votes || {}; if (nv) q.votes[myId] = nv; else delete q.votes[myId]; }),
+        nv > 0 ? 'Upvoted — thanks for the feedback!' : nv < 0 ? 'Downvoted. Ouch.' : 'Vote removed');
     }
-    dirty = false;
-    status('Saved ' + new Date(g.updated_at).toLocaleTimeString());
-  } catch(e){
-    if (e.status === 404){ gistId = ''; put('ts_gist', ''); }
-    status(e.message, true);
+    case 'accept': {
+      const undo = t.accepted === pid;
+      return mutate(withT(tid, t => { if (!findP(t, pid)) return false; if (t.accepted === pid){ t.accepted = null; t.solved = false; } else { t.accepted = pid; t.solved = true; } }),
+        undo ? 'Accepted answer removed' : '+15 Accepted answer! 🎉');
+    }
+    case 'close': return mutate(withT(tid, t => { t.solved = true; }), 'Question closed as solved');
+    case 'reopen': return mutate(withT(tid, t => { t.solved = false; }), 'Question reopened');
+    case 'delTopic':
+      if (!confirm('Delete this question and all its answers?')) return;
+      if (await mutate(x => { const n = x.topics.length; x.topics = x.topics.filter(y => y.id !== tid); if (x.topics.length === n) return false; }, 'Question deleted')) location.hash = '#/';
+      return;
+    case 'delPost':
+      if (!confirm('Delete this answer?')) return;
+      return mutate(withT(tid, t => { const n = t.posts.length; t.posts = t.posts.filter(p => p.id !== pid); if (t.posts.length === n) return false; if (t.accepted === pid){ t.accepted = null; t.solved = false; } }), 'Answer deleted');
+    case 'edit': editing = pid; render(); { const e = $('edit-' + pid); if (e){ e.focus(); e.setSelectionRange(e.value.length, e.value.length); } } return;
+    case 'cancelEdit': editing = null; render(); return;
+    case 'saveEdit': {
+      const body = $('edit-' + pid).value.trim();
+      if (!body){ toast('A post can’t be empty', 'err'); return; }
+      if (await mutate(withT(tid, t => { const p = findP(t, pid); if (!p) return false; p.body = body; p.edited = Date.now(); }), 'Your edit has been saved')){ editing = null; render(); }
+      return;
+    }
+    case 'quote': {
+      const p = findP(t, pid); if (!p) return;
+      drafts[tid] = '> **' + p.author + '** wrote:\n' + p.body.split('\n').map(l => '> ' + l).join('\n') + '\n\n' + (drafts[tid] || '');
+      render(); const b = $('ansBody'); b.focus(); b.setSelectionRange(b.value.length, b.value.length); b.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    case 'share': {
+      const url = location.href.split('#')[0] + '#/q/' + encodeURIComponent(tid);
+      try { await navigator.clipboard.writeText(url); toast('Link copied to clipboard'); } catch(e){ prompt('Copy this link:', url); }
+      return;
+    }
+    case 'bookmark': { const k = 'bm_' + tid, on = !get(k); put(k, on ? '1' : ''); toast(on ? 'Saved! (only on this device)' : 'Removed from saves'); render(); return; }
   }
 }
 
-function show(){
-  $('setup').classList.toggle('hidden', !!token);
-  $('app').classList.toggle('hidden', !token);
-  if (token) load();
+function md(kind, id){
+  const ta = $(id); if (!ta) return;
+  const s = ta.selectionStart, e = ta.selectionEnd, sel = ta.value.slice(s, e);
+  const wrap = { bold: ['**', '**', 'strong text'], italic: ['*', '*', 'emphasized text'], code: ['`', '`', 'code'], link: ['[', '](https://)', 'link text'] }[kind];
+  let ins, cs, ce;
+  if (wrap){ const inner = sel || wrap[2]; ins = wrap[0] + inner + wrap[1]; cs = s + wrap[0].length; ce = cs + inner.length; }
+  else if (kind === 'block'){ const inner = sel || 'code goes here'; const pre = s && ta.value[s - 1] !== '\n' ? '\n' : ''; ins = pre + '```\n' + inner + '\n```\n'; cs = s + pre.length + 4; ce = cs + inner.length; }
+  else { const pfx = kind === 'quote' ? '> ' : '- '; const inner = sel || (kind === 'quote' ? 'Blockquote' : 'List item'); const pre = s && ta.value[s - 1] !== '\n' ? '\n' : ''; ins = pre + inner.split('\n').map(l => pfx + l).join('\n'); cs = s + pre.length + pfx.length; ce = s + ins.length; }
+  ta.focus(); ta.setRangeText(ins, s, e, 'end'); ta.setSelectionRange(cs, ce);
+  ta.dispatchEvent(new Event('input', { bubbles: true }));
 }
 
+/* ---------- events ---------- */
+document.addEventListener('click', e => {
+  const el = e.target.closest('button, a[data-act], .pager span');
+  if (!el) { if (document.body.classList.contains('navopen') && !e.target.closest('#leftnav')) document.body.classList.remove('navopen'); return; }
+  if (el.matches('.pager span')) return toast('There is only one page. We checked.');
+  if (el.dataset.fake){ const f = el.dataset.fake; toast(f === 'Flag' ? 'Thanks! A moderator will look at this in 6–8 business years.' : f + ': nothing new here (yet)'); return; }
+  if (el.dataset.md){ md(el.dataset.md, el.dataset.for); return; }
+  if (el.dataset.sort){ sort = el.dataset.sort; render(); return; }
+  if (el.dataset.cookie !== undefined){ put('jb_cookie', '1'); render(); toast('Preferences saved. Have a cookie anyway 🍪'); return; }
+  if (el.dataset.act){ e.preventDefault(); act(el.dataset.act, el); return; }
+  if (el.id === 'postQ') postQuestion();
+  if (el.id === 'postA') postAnswer(route().id);
+  if (el.id === 'renameBtn2') rename();
+});
+document.addEventListener('input', e => {
+  const el = e.target;
+  if (el.id === 'search'){
+    query = el.value;
+    const r = route(); if (r.v !== 'list'){ location.hash = '#/questions'; return; }
+    render(); return;
+  }
+  if (el.id === 'askTitle' || el.id === 'askBody' || el.id === 'askTags'){ drafts.ask = drafts.ask || {}; drafts.ask[{ askTitle: 'title', askBody: 'body', askTags: 'tags' }[el.id]] = el.value; }
+  else if (el.id === 'ansBody') drafts[route().id] = el.value;
+  updatePreviews();
+});
+document.addEventListener('change', e => { if (e.target.id === 'ansSort'){ ansSort = e.target.value; render(); } });
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter'){
+    if (e.target.id === 'ansBody'){ e.preventDefault(); postAnswer(route().id); }
+    if (['askTitle', 'askBody', 'askTags'].includes(e.target.id)){ e.preventDefault(); postQuestion(); }
+  }
+  if ((e.ctrlKey || e.metaKey) && ['b', 'i', 'k'].includes(e.key.toLowerCase()) && e.target.tagName === 'TEXTAREA'){
+    e.preventDefault(); md({ b: 'bold', i: 'italic', k: 'code' }[e.key.toLowerCase()], e.target.id);
+  }
+});
+window.addEventListener('hashchange', () => {
+  editing = null; document.body.classList.remove('navopen');
+  const r = route(); if (r.v !== 'list'){ query = ''; $('search').value = ''; }
+  render(); window.scrollTo(0, 0); countView();
+});
+
+function rename(){
+  const n = prompt('Display name on this device:', me);
+  if (n && n.trim()){ me = n.trim().slice(0, 40); put('ts_name', me); render(); toast('You are now ' + me); }
+}
+$('renameBtn').onclick = rename;
+$('hamb').onclick = e => { e.stopPropagation(); document.body.classList.toggle('navopen'); };
+$('noticeX').onclick = () => { put('jb_notice', '1'); render(); };
+$('cookieX').onclick = () => { put('jb_cookie', '1'); render(); };
+$('cookieAgain').onclick = () => { put('jb_cookie', ''); render(); };
 $('tokenSave').onclick = () => {
   const t = $('tokenInput').value.trim();
-  if (!t) return;
+  if (!t){ toast('Paste your access key', 'err'); $('tokenInput').focus(); return; }
   token = t; put('ts_token', t); $('tokenInput').value = '';
-  show();
+  render(); refresh(true).then(countView);
 };
-$('saveBtn').onclick = save;
-$('loadBtn').onclick = () => {
-  if (dirty && !confirm('Discard unsaved changes and load the saved text?')) return;
-  load();
-};
-$('copyBtn').onclick = async () => {
-  try { await navigator.clipboard.writeText($('text').value); status('Copied'); }
-  catch(e){ $('text').select(); status('Select-all done — copy manually', true); }
-};
-$('clearBtn').onclick = () => { $('text').value = ''; dirty = true; $('text').focus(); status('Cleared — press Save to keep it'); };
+$('tokenInput').addEventListener('keydown', e => { if (e.key === 'Enter') $('tokenSave').click(); });
+$('refreshBtn').onclick = () => refresh();
 $('forgetBtn').onclick = () => {
-  if (!confirm('Remove the token from this device? Your saved text stays on GitHub.')) return;
-  token = ''; gistId = ''; put('ts_token', ''); put('ts_gist', ''); $('text').value = ''; show();
+  if (!confirm('Forget the access key on this device? Your questions stay safe on GitHub.')) return;
+  token = ''; gistId = ''; put('ts_token', ''); put('ts_gist', ''); loaded = false; data = { version: 2, topics: [] }; render();
 };
-$('text').addEventListener('input', () => { dirty = true; });
 
-// Ctrl/Cmd+S to save
-document.addEventListener('keydown', e => {
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's'){ e.preventDefault(); if (token) save(); }
-});
-// Pick up changes from the other device when you come back to the tab
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible' && token && !dirty) load();
-});
+// count one view per question per browser session
+function countView(){
+  const r = route(); if (r.v !== 'q' || !loaded || sget('v_' + r.id)) return;
+  if (!data.topics.some(t => t.id === r.id)) return;
+  sput('v_' + r.id, '1');
+  mutate(withT(r.id, t => { t.views = (t.views || 0) + 1; }), '', true);
+}
 
-show();
+// pick up posts from other devices
+function canAuto(){ return token && !busy && !editing && !dropJob && document.visibilityState === 'visible'; }
+document.addEventListener('visibilitychange', () => { if (canAuto()) refresh(true); });
+setInterval(() => { if (canAuto()) refresh(true); }, 30000);
+setInterval(() => { if (token && loaded && !editing && document.activeElement?.tagName !== 'TEXTAREA' && document.activeElement?.tagName !== 'INPUT') render(); }, 60000);
+
+
+/* ---------- File drop: files stored in your private Gists, listed in forum.json ---------- */
+const DROP_DESC = 'Java Box file drop';
+const CHUNK = 900000;                  // base64 characters per stored piece (GitHub returns up to 1 MB per piece)
+const REQ_MAX = 4500000;               // characters sent per request
+const MAX_TOTAL = 50 * 1024 * 1024;    // per publish
+let staged = [], dropNote = '', dropJob = null;
+const gistCache = {};
+
+const fmtSize = b => b < 1024 ? b + ' B' : b < 1048576 ? (b / 1024).toFixed(b < 10240 ? 1 : 0) + ' KB' : (b / 1048576).toFixed(b < 10485760 ? 1 : 0) + ' MB';
+const dropLabel = dr => dr.note || (dr.files.length === 1 ? dr.files[0].name : dr.files[0].name + ' + ' + (dr.files.length - 1) + ' more');
+function ficon(name){
+  const ext = (name.split('.').pop() || '').toLowerCase().slice(0, 4), e = name.includes('.') ? ext : 'file';
+  const col = /^(zip|rar|7z|gz|tar)$/.test(e) ? '#8e44ad' : /^(png|jpe?g|gif|webp|heic|svg)$/.test(e) ? '#16a085' : /^(pdf)$/.test(e) ? '#d33' : /^(docx?|txt|md|rtf)$/.test(e) ? '#2b6cb0' : /^(xlsx?|csv)$/.test(e) ? '#2f855a' : /^(mp4|mov|mp3|wav)$/.test(e) ? '#dd6b20' : /^(java|js|html|css|py|json|ts|class|jar)$/.test(e) ? '#f48225' : '#6a737c';
+  return `<span class="ficon" style="background:${col}">${esc(e.toUpperCase())}</span>`;
+}
+
+function addFiles(list){
+  let added = 0;
+  for (const f of list){
+    if (!f) continue;
+    let name = f.name || 'file', n = 2;
+    const taken = nm => staged.some(x => x.name === nm);
+    while (taken(name)){ const i = (f.name || 'file').lastIndexOf('.'); name = i > 0 ? f.name.slice(0, i) + ` (${n})` + f.name.slice(i) : (f.name || 'file') + ` (${n})`; n++; }
+    staged.push({ file: f, name }); added++;
+  }
+  if (added) toast(added + ' file' + (added === 1 ? '' : 's') + ' added');
+  render();
+}
+
+function readB64(file){
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => { const s = String(r.result); res(s.slice(s.indexOf(',') + 1)); };
+    r.onerror = () => rej(new Error('Could not read ' + file.name));
+    r.readAsDataURL(file);
+  });
+}
+
+async function publishDrop(){
+  if (!staged.length || dropJob) return;
+  const total = staged.reduce((a, s) => a + s.file.size, 0);
+  if (total > MAX_TOTAL){ toast('Too big: ' + fmtSize(total) + '. The limit is ' + fmtSize(MAX_TOTAL) + ' per publish — split it up.', 'err'); return; }
+  dropJob = { done: 0, total: 1, label: 'Reading files…' }; render();
+  let gid = null;
+  try {
+    // 1. read + cut into pieces
+    const meta = [], pieces = [];
+    for (let i = 0; i < staged.length; i++){
+      const s = staged[i], b64 = await readB64(s.file);
+      const names = [];
+      for (let k = 0, c = 0; k < b64.length; k += CHUNK, c++){
+        const nm = `f${i}-${String(c).padStart(3, '0')}`;
+        names.push(nm); pieces.push({ name: nm, content: b64.slice(k, k + CHUNK) });
+      }
+      meta.push({ name: s.name, size: s.file.size, type: s.file.type || 'application/octet-stream', chunks: names.length });
+    }
+    // 2. group pieces into requests
+    const groups = []; let cur = [], len = 0;
+    for (const pc of pieces){
+      if (cur.length && len + pc.content.length > REQ_MAX){ groups.push(cur); cur = []; len = 0; }
+      cur.push(pc); len += pc.content.length;
+    }
+    if (cur.length) groups.push(cur);
+    dropJob = { done: 0, total: groups.length + 1, label: 'Uploading…' }; render();
+    // 3. create the private gist, then add the pieces
+    const readme = { 'readme.txt': { content: 'Files sent with Java Box. Open the site to download them.' } };
+    const first = groups.shift() || [];
+    const g = await gh('/gists', { method: 'POST', body: JSON.stringify({
+      description: DROP_DESC + ': ' + meta.map(m => m.name).join(', ').slice(0, 200), public: false,
+      files: Object.assign({}, readme, ...first.map(pc => ({ [pc.name]: { content: pc.content } }))) }) });
+    gid = g.id;
+    dropJob.done = 1; dropJob.label = 'Uploading… ' + fmtSize(Math.round(total / (groups.length + 1))) + ' of ' + fmtSize(total); render();
+    for (let gi = 0; gi < groups.length; gi++){
+      await gh('/gists/' + gid, { method: 'PATCH', body: JSON.stringify({ files: Object.assign({}, ...groups[gi].map(pc => ({ [pc.name]: { content: pc.content } }))) }) });
+      dropJob.done = gi + 2; dropJob.label = 'Uploading… ' + fmtSize(Math.round(total * (gi + 2) / (groups.length + 1))) + ' of ' + fmtSize(total); render();
+    }
+    // 4. list it so every device sees it
+    const entry = { id: gid, note: dropNote.trim(), files: meta, by: me, byId: myId, time: Date.now() };
+    dropJob.label = 'Finishing…'; render();
+    const job = dropJob; dropJob = null;
+    const ok = await mutate(d => { d.drops = d.drops || []; d.drops.unshift(entry); }, 'Published! Open Files on your other device to download.');
+    if (!ok){ dropJob = null; throw new Error('Uploaded, but could not update the list. Try again.'); }
+    staged = []; dropNote = ''; render();
+  } catch(e){
+    dropJob = null;
+    if (gid) gh('/gists/' + gid, { method: 'DELETE' }).catch(() => {});
+    toast(e.message || 'Upload failed', 'err'); render();
+  }
+}
+
+async function fetchDropGist(id){
+  if (!gistCache[id]) gistCache[id] = gh('/gists/' + id).catch(e => { delete gistCache[id]; throw e; });
+  return gistCache[id];
+}
+async function fileBlob(dr, i){
+  const g = await fetchDropGist(dr.id), f = dr.files[i], parts = [];
+  for (let c = 0; c < f.chunks; c++){
+    const gf = g.files[`f${i}-${String(c).padStart(3, '0')}`];
+    if (!gf) throw new Error('A piece of ' + f.name + ' is missing.');
+    const b64 = gf.truncated ? await (await fetch(gf.raw_url)).text() : gf.content;
+    const bin = atob(b64.trim()), arr = new Uint8Array(bin.length);
+    for (let k = 0; k < bin.length; k++) arr[k] = bin.charCodeAt(k);
+    parts.push(arr);
+  }
+  return new Blob(parts, { type: f.type });
+}
+function saveBlob(blob, name){
+  const url = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
+async function downloadFile(dropId, i){
+  const dr = data.drops.find(x => x.id === dropId); if (!dr) return;
+  toast('Downloading ' + dr.files[i].name + '…', '', true);
+  try { saveBlob(await fileBlob(dr, i), dr.files[i].name); toast('Downloaded ' + dr.files[i].name); }
+  catch(e){ toast(e.status === 404 ? 'This file was deleted.' : (e.message || 'Download failed'), 'err'); }
+}
+let jszip;
+function loadZip(){
+  if (window.JSZip) return Promise.resolve(window.JSZip);
+  return jszip || (jszip = new Promise((res, rej) => {
+    const sc = document.createElement('script');
+    sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+    sc.onload = () => res(window.JSZip); sc.onerror = () => { jszip = null; rej(new Error('Could not load the zip tool')); };
+    document.head.appendChild(sc);
+  }));
+}
+async function downloadAll(dropId){
+  const dr = data.drops.find(x => x.id === dropId); if (!dr) return;
+  toast('Zipping ' + dr.files.length + ' files…', '', true);
+  try {
+    const JSZip = await loadZip(), zip = new JSZip();
+    for (let i = 0; i < dr.files.length; i++) zip.file(dr.files[i].name, await fileBlob(dr, i));
+    const name = (dr.note || 'java-box-files').replace(/[\\/:*?"<>|]+/g, '-').slice(0, 60) + '.zip';
+    saveBlob(await zip.generateAsync({ type: 'blob' }), name); toast('Downloaded ' + name);
+  } catch(e){ toast(e.status === 404 ? 'These files were deleted.' : (e.message || 'Download failed'), 'err'); }
+}
+async function deleteDrop(dropId){
+  const dr = data.drops.find(x => x.id === dropId); if (!dr) return;
+  if (!confirm('Delete "' + dropLabel(dr) + '" from all your devices?')) return;
+  try { await gh('/gists/' + dropId, { method: 'DELETE' }); } catch(e){ if (e.status !== 404){ toast(e.message, 'err'); return; } }
+  delete gistCache[dropId];
+  mutate(d => { d.drops = (d.drops || []).filter(x => x.id !== dropId); }, 'Deleted');
+}
+
+function viewFiles(){
+  const total = staged.reduce((a, s) => a + s.file.size, 0), drops = data.drops || [];
+  const pct = dropJob ? Math.max(4, Math.round(100 * dropJob.done / dropJob.total)) : 0;
+  return `
+  <div class="headline"><h1>File Drop</h1><a class="btn" href="#/ask">Ask Question</a></div>
+  <p style="font-size:13px;color:#3b4045;margin:-4px 0 16px">Send files from this device to your other devices. They're stored privately in your GitHub Gists — only devices with your access key can see them. Up to ${fmtSize(MAX_TOTAL)} per publish.</p>
+  <div class="dz" id="dropzone" role="button" tabindex="0">
+    <div class="big">📦</div>
+    <b>Drop files or a .zip here</b>
+    <small>or <span style="color:var(--link)">browse</span> · or paste with <kbd>Ctrl</kbd>+<kbd>V</kbd></small>
+  </div>
+  <input type="file" id="dropInput" multiple hidden>
+  ${staged.length ? `<div class="staged">${staged.map((s, i) => `<div class="srow">${ficon(s.name)}<span class="fn" title="${esc(s.name)}">${esc(s.name)}</span><span class="sz">${fmtSize(s.file.size)}</span>${dropJob ? '' : `<button class="x" data-unstage="${i}" title="Remove">×</button>`}</div>`).join('')}</div>
+  <div class="pubbar">
+    <input class="field" id="dropNote" maxlength="80" placeholder="Label (optional), e.g. Project backup" value="${esc(dropNote)}" ${dropJob ? 'disabled' : ''}>
+    <button class="btn" id="publishBtn" ${dropJob ? 'disabled' : ''}>Publish ${staged.length} file${staged.length === 1 ? '' : 's'} · ${fmtSize(total)}</button>
+    ${dropJob ? '' : '<button class="btn white" id="clearStaged">Clear</button>'}
+  </div>
+  ${total > MAX_TOTAL ? `<div class="formerr">That's ${fmtSize(total)} — over the ${fmtSize(MAX_TOTAL)} limit. Remove something or split it up.</div>` : ''}
+  ${dropJob ? `<div class="prog"><i style="width:${pct}%"></i></div><div class="progtxt">${esc(dropJob.label)} Keep this page open.</div>` : ''}` : ''}
+
+  <div class="ansh" style="margin-top:28px"><h2>${drops.length} drop${drops.length === 1 ? '' : 's'} on all your devices</h2></div>
+  ${drops.map(dr => {
+    const size = dr.files.reduce((a, f) => a + f.size, 0), fresh = Date.now() - dr.time < 36e5;
+    return `<div class="drop">
+      <div class="dh"><span class="t">${esc(dropLabel(dr))}${fresh ? '<span class="new-pill">NEW</span>' : ''}</span>
+        <span class="m">${identicon(dr.by, 16)} ${esc(dr.by)} · <span title="${esc(full(dr.time))}">${ago(dr.time)}</span> · ${dr.files.length} file${dr.files.length === 1 ? '' : 's'}, ${fmtSize(size)}</span>
+        ${dr.files.length > 1 ? `<button class="btn sm" data-dlall="${esc(dr.id)}">Download all (.zip)</button>` : ''}
+        <button class="lnk" data-deldrop="${esc(dr.id)}" style="color:#c22e32">Delete</button></div>
+      ${dr.files.map((f, i) => `<div class="srow">${ficon(f.name)}<span class="fn" title="${esc(f.name)}">${esc(f.name)}</span><span class="sz">${fmtSize(f.size)}</span><button class="btn outline sm dl" data-dl="${esc(dr.id)}" data-i="${i}">Download</button></div>`).join('')}
+    </div>`;
+  }).join('') || `<div class="empty"><div class="big">🗃️</div>Nothing sent yet. Drop something in the box above.</div>`}`;
+}
+
+// file-drop events
+document.addEventListener('click', e => {
+  const z = e.target.closest('#dropzone'); if (z && !dropJob){ $('dropInput').click(); return; }
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.unstage !== undefined){ staged.splice(+b.dataset.unstage, 1); render(); }
+  else if (b.id === 'clearStaged'){ staged = []; render(); }
+  else if (b.id === 'publishBtn') publishDrop();
+  else if (b.dataset.dl) downloadFile(b.dataset.dl, +b.dataset.i);
+  else if (b.dataset.dlall) downloadAll(b.dataset.dlall);
+  else if (b.dataset.deldrop) deleteDrop(b.dataset.deldrop);
+});
+document.addEventListener('keydown', e => { if (e.target.id === 'dropzone' && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); $('dropInput').click(); } });
+document.addEventListener('change', e => { if (e.target.id === 'dropInput'){ addFiles([...e.target.files]); e.target.value = ''; } });
+document.addEventListener('input', e => { if (e.target.id === 'dropNote') dropNote = e.target.value; });
+['dragenter', 'dragover'].forEach(t => document.addEventListener(t, e => {
+  if (route().v !== 'files' || !e.dataTransfer || ![...e.dataTransfer.types].includes('Files')) return;
+  e.preventDefault(); $('dropzone')?.classList.add('over');
+}));
+document.addEventListener('dragleave', e => { if (e.target.id === 'dropzone') e.target.classList.remove('over'); });
+document.addEventListener('drop', e => {
+  if (route().v !== 'files' || !e.dataTransfer || !e.dataTransfer.files.length) return;
+  e.preventDefault(); $('dropzone')?.classList.remove('over');
+  if (!dropJob) addFiles([...e.dataTransfer.files]);
+});
+document.addEventListener('paste', e => {
+  if (route().v !== 'files' || dropJob || !e.clipboardData) return;
+  const files = [...e.clipboardData.files];
+  if (files.length){ e.preventDefault(); addFiles(files); return; }
+  const tag = e.target.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+  const text = e.clipboardData.getData('text');
+  if (text){ e.preventDefault(); addFiles([new File([text], 'pasted-text-' + new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-') + '.txt', { type: 'text/plain' })]); }
+});
+window.addEventListener('beforeunload', e => { if (dropJob){ e.preventDefault(); e.returnValue = ''; } });
+
+render();
+if (token) refresh(true).then(countView);
 </script>
 </body>
 </html>
